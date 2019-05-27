@@ -1,7 +1,7 @@
-Feature: Verify IBM Cloud Correctly Displayed
+Feature: Verify Google Chrome Works Correctly
 
   @owner_Jesus.Neira @Smoke
-  Scenario Outline: Verify IBM Cloud Correctly Displayed
+  Scenario Outline: Verify Google Chrome Works Correctly
     Given I Login to IBM Cloud with <user> as user and <pass> as password
     Then IBM Cloud Page is Correctly Displayed
 
