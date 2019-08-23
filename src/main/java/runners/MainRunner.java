@@ -17,7 +17,7 @@ public class MainRunner {
     public static void main(String[] args) {
         if (args.length == 0) {
             args = new String[1];
-            args[0] = "-t @DEV -t @Smoke2";
+            args[0] = "-t @DEV -t @Smoke";
             args[0] = args[0] + ";-p json:target/smoke/Infrastructure/Infrastructure.json";
             args[0] = args[0] + " -p html:target/smoke/Infrastructure/html-report";
         }
