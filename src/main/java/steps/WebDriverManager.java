@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 class WebDriverManager {
-	private static final Logger logger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger(WebDriverManager.class);
 	private WebDriver webDriver = null;
 	private ChromeOptions chromeOptions;
 	private FirefoxOptions firefoxOptions;
@@ -112,6 +113,7 @@ class WebDriverManager {
 				+ "application/vnd.adobe.xdp+xml," + "application/xml," + "text/xml," + "application/excel," + "application/vnd.ms-excel," + "application/msexcel," + "application/x-msexcel," + "application/x-ms-excel,"
 				+ "application/x-excel," + "application/x-dos_ms_excel," + "application/xls," + "application/x-xls," + "text/xls," + "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 		firefoxOptions = new FirefoxOptions();
+		firefoxOptions.setLogLevel(FirefoxDriverLogLevel.ERROR);
 		firefoxOptions.addArguments("--browser.download.manager.showWhenStarting=false");
 		firefoxOptions.addArguments("--browser.download.folderList=2");
 		firefoxOptions.addArguments("--browser.helperApps.neverAsk.saveToDisk=" + fileMimeTypes);

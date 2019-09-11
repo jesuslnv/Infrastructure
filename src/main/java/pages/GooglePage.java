@@ -12,7 +12,7 @@ public class GooglePage extends Page {
 
     public void NavigateTo_GooglePage() {
         webDriver.navigate().to("https://www.google.com/");
-        // Wait for page Load	
+        // Wait for page Load
         waitForPageLoad(60);
     }
 
