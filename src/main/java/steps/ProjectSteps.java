@@ -9,48 +9,46 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 
-import pages.GooglePage;
-import pages.Google.ServiceSupportPage;
-import pages.Google.ServiceSupport.CreateTicketPage;
+import pages.Belatrix.MyFilesPage;
+import pages.BelatrixPage;
+import pages.Belatrix.ServiceSupport.CreateTicketPage;
 
 public class ProjectSteps {
-    private WebDriverManager webDriverManager;
     private WebDriver webDriver;
 
     @Before
     public void before(Scenario scenario) {
-        webDriverManager = new WebDriverManager();
-        webDriver = webDriverManager.getDriver(scenario);
+        webDriver = WebDriverManager.getWebDriver(scenario);
     }
 
     @After
     public void after(Scenario scenario) {
-        webDriverManager.closeDriver(scenario);
+        WebDriverManager.closeDriver(scenario);
     }
 
-    @Given("^I Navigate To Google Page$")
-    public void NavigateTo_GooglePage() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        googlePage.NavigateTo_GooglePage();
+    @Given("^I Login To Belatrix Page with (.*) as User and (.*) as Password$")
+    public void LoginTo_BelatrixPage(String user, String pass) {
+        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
+        belatrixPage.LoginTo_BelatrixPage(user, pass);
     }
 
-    @Then("^Google Page is Correctly Displayed$")
-    public void GooglePage_CorrectlyDisplayed() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        boolean response = googlePage.GooglePage_CorrectlyDisplayed();
-        Assert.assertTrue("Google Page isn't Correctly Displayed", response);
+    @Then("^Belatrix Page is Correctly Displayed$")
+    public void BelatrixPage_CorrectlyDisplayed() {
+        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
+        boolean response = belatrixPage.BelatrixPage_CorrectlyDisplayed();
+        Assert.assertTrue("Belatrix Page isn't Correctly Displayed", response);
     }
 
-    @When("^I Click on Create Ticket Button; in Service Support Page$")
-    public void ClickOn_CreateTicketButton_in_ServiceSupportPage() {
-        ServiceSupportPage serviceSupportPage = new ServiceSupportPage(webDriver);
-        serviceSupportPage.ClickOn_CreateTicketButton();
+    @When("^I Click on My Files Button; in Belatrix Main Page$")
+    public void ClickOn_MyFilesButton_in_BelatrixMainPage() {
+        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
+        belatrixPage.ClickOn_MyFilesButton();
     }
 
-    @Then("^Create Ticket Page is Correctly Displayed; in Service Support Page$")
-    public void CreateTicketPage_CorrectlyDisplayed_in_ServiceSupportPage() {
-        CreateTicketPage createTicketPage = new CreateTicketPage(webDriver);
-        boolean response = createTicketPage.CreateTicketPage_CorrectlyDisplayed();
-        Assert.assertTrue("Create Ticket Page isn't Correctly Displayed", response);
+    @Then("^My Files Page is Correctly Displayed; in Belatrix Page$")
+    public void MyFilesPage_CorrectlyDisplayed_in_BelatrixPage() {
+        MyFilesPage myFilesPage = new MyFilesPage(webDriver);
+        boolean response = myFilesPage.MyFilesPage_CorrectlyDisplayed();
+        Assert.assertTrue("My Files Page isn't Correctly Displayed", response);
     }
 }
