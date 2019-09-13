@@ -8,10 +8,11 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainRunner {
+public class MainRunner implements Serializable {
     private static final Logger logger = LogManager.getLogger();
 
     public static void main(String[] args) {

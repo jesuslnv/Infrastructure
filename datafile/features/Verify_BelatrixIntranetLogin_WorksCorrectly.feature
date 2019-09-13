@@ -9,5 +9,5 @@ Feature: Verify Belatrix INternal Login Works Correctly
 
     @DEV
     Examples:
-      | user                  | pass             |
-      | Jneira@belatrixsf.com | Q3VydGVkekAxMQ== |
+      | user   | pass                     |
+      | Jneira | 26LMoucqQFjcWlmduLFy4w== |

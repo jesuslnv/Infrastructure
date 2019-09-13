@@ -1,12 +1,10 @@
 package steps;
 
-import cucumber.api.Scenario;
+import io.cucumber.core.api.Scenario;
 import cucumber.runtime.Runtime;
-import cucumber.runtime.RuntimeOptions;
 import cucumber.runtime.io.ResourceLoader;
-import cucumber.runtime.junit.ExecutionUnitRunner;
-import cucumber.runtime.junit.JUnitReporter;
 import cucumber.runtime.model.CucumberFeature;
+import io.cucumber.core.options.RuntimeOptions;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -28,7 +26,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -37,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 class WebDriverManager {
     private static final Logger logger = LogManager.getLogger();
@@ -54,7 +52,10 @@ class WebDriverManager {
         //If the current WebDriver is NULL it will be settled
         if (webDriver == null) {
             //Read Tags to Apply the Configuration
-            readTagsRunner(scenario);
+            logger.info("WAAAAAA1: " + scenario.getSourceTagNames());
+            //CONVERT CUCUMBER OPTIONS TO VARIABLE TO OBTAIN THE TAGS
+            logger.info("WAAAAAA2: " + System.getProperty("cucumber.options"));
+            //readTagsRunner(scenario);
             // OWASP ZAP Configuration
             if (owasp) {
                 configOwasp();
@@ -100,12 +101,17 @@ class WebDriverManager {
     // <editor-fold desc="DRIVER CONFIG">
     private static void configChromeDriver() {
         System.setProperty("webdriver.chrome.driver", "src\\main\\resources\\chromedriver.exe");
+        //------- Remove Unnecessary Logs -------
+        System.setProperty("webdriver.chrome.silentOutput", "true");
+        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
+        //---------------------------------------
         chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--browser.download.manager.showWhenStarting=false");
         chromeOptions.addArguments("--browser.download.folderList=2");
         chromeOptions.addArguments("--browser.helperApps.neverAsk.saveToDisk=" + fileMimeTypes);
         chromeOptions.addArguments("--browser.helperApps.neverAsk.openFile=" + fileMimeTypes);
         chromeOptions.addArguments("--browser.download.dir=C:\\Temp\\");
+        chromeOptions.addArguments("--incognito");
         logger.info("Starting a normal Chrome WebDriver");
         webDriver = new ChromeDriver(chromeOptions);
     }
@@ -125,45 +131,45 @@ class WebDriverManager {
 
     // <editor-fold desc="READ TAGS">
     private static void readTagsRunner(Scenario scenario) {
-        try {
-            Field f = scenario.getClass().getDeclaredField("reporter");
-            f.setAccessible(true);
-            JUnitReporter reporter = (JUnitReporter) f.get(scenario);
-            Field executionRunnerField = reporter.getClass().getDeclaredField("executionUnitRunner");
-            executionRunnerField.setAccessible(true);
-            ExecutionUnitRunner executionUnitRunner = (ExecutionUnitRunner) executionRunnerField.get(reporter);
-            Field runtimeField = executionUnitRunner.getClass().getDeclaredField("runtime");
-            runtimeField.setAccessible(true);
-            Runtime runtime = (Runtime) runtimeField.get(executionUnitRunner);
-            Field resourceLoaderField = runtime.getClass().getDeclaredField("resourceLoader");
-            resourceLoaderField.setAccessible(true);
-            ResourceLoader resourceLoader = (ResourceLoader) resourceLoaderField.get(runtime);
-            Field runtimeOptionsField = runtime.getClass().getDeclaredField("runtimeOptions");
-            runtimeOptionsField.setAccessible(true);
-            RuntimeOptions runtimeOptions = (RuntimeOptions) runtimeOptionsField.get(runtime);
-            for (Object obj : runtimeOptions.getFilters()) {
-                switch (obj.toString().trim()) {
-                    case "~@Chrome":
-                        chrome = true;
-                        break;
-                    case "~@SeleniumGrid":
-                        seleniumGrid = true;
-                        break;
-                    case "~@OWASP":
-                        owasp = true;
-                        break;
-                }
-            }
-            // Only set the variable at the beginning
-            if (numberOfScenarios <= 0) {
-                List<CucumberFeature> features = runtimeOptions.cucumberFeatures(resourceLoader);
-                for (CucumberFeature cucumberFeature : features) {
-                    numberOfScenarios = numberOfScenarios + cucumberFeature.getFeatureElements().size();
-                }
-            }
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            Field field = scenario.getClass().getDeclaredField("reporter");
+//            field.setAccessible(true);
+//            JUnitReporter reporter = (JUnitReporter) field.get(scenario);
+//            Field executionRunnerField = reporter.getClass().getDeclaredField("executionUnitRunner");
+//            executionRunnerField.setAccessible(true);
+//            ExecutionUnitRunner executionUnitRunner = (ExecutionUnitRunner) executionRunnerField.get(reporter);
+//            Field runtimeField = executionUnitRunner.getClass().getDeclaredField("runtime");
+//            runtimeField.setAccessible(true);
+//            Runtime runtime = (Runtime) runtimeField.get(executionUnitRunner);
+//            Field resourceLoaderField = runtime.getClass().getDeclaredField("resourceLoader");
+//            resourceLoaderField.setAccessible(true);
+//            ResourceLoader resourceLoader = (ResourceLoader) resourceLoaderField.get(runtime);
+//            Field runtimeOptionsField = runtime.getClass().getDeclaredField("runtimeOptions");
+//            runtimeOptionsField.setAccessible(true);
+//            RuntimeOptions runtimeOptions = (RuntimeOptions) runtimeOptionsField.get(runtime);
+//            for (Object obj : runtimeOptions.getTagFilters()) {
+//                switch (obj.toString().trim()) {
+//                    case "~@Chrome":
+//                        chrome = true;
+//                        break;
+//                    case "~@SeleniumGrid":
+//                        seleniumGrid = true;
+//                        break;
+//                    case "~@OWASP":
+//                        owasp = true;
+//                        break;
+//                }
+//            }
+//            // Only set the variable at the beginning
+//            if (numberOfScenarios <= 0) {
+//                List<CucumberFeature> features = runtimeOptions.cucumberFeatures(resourceLoader);
+//                for (CucumberFeature cucumberFeature : features) {
+//                    numberOfScenarios = numberOfScenarios + cucumberFeature.getFeatureElements().size();
+//                }
+//            }
+//        } catch (NoSuchFieldException | IllegalAccessException ex) {
+//            ex.printStackTrace();
+//        }
     }
     // </editor-fold>
 

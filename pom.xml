@@ -6,11 +6,12 @@
     <groupId>Infrastructure</groupId>
     <artifactId>Infrastructure</artifactId>
     <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.12</maven.compiler.source>
-        <maven.compiler.target>1.12</maven.compiler.target>
+        <maven.compiler.source>12</maven.compiler.source>
+        <maven.compiler.target>12</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -22,14 +23,19 @@
         </dependency>
         <!-- CUCUMBER -->
         <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>1.2.5</version>
+            <version>4.7.2</version>
         </dependency>
         <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
-            <version>1.2.5</version>
+            <version>4.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>4.7.2</version>
         </dependency>
         <!-- TO RUN TESTS -->
         <dependency>
@@ -75,7 +81,7 @@
             <artifactId>SeleniumControl</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/SeleniumControl.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/SeleniumControl-1.0.0.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
