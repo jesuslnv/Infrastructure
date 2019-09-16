@@ -1,10 +1,6 @@
 package steps;
 
 import io.cucumber.core.api.Scenario;
-import cucumber.runtime.Runtime;
-import cucumber.runtime.io.ResourceLoader;
-import cucumber.runtime.model.CucumberFeature;
-import io.cucumber.core.options.RuntimeOptions;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -29,10 +25,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -48,14 +42,11 @@ class WebDriverManager {
     private static int numberOfScenarios = 0;
     private static boolean owasp = false, seleniumGrid = false, chrome = false;
 
-    public static WebDriver getWebDriver(Scenario scenario) {
+    static WebDriver getWebDriver(Scenario scenario) {
         //If the current WebDriver is NULL it will be settled
         if (webDriver == null) {
-            //Read Tags to Apply the Configuration
-            logger.info("WAAAAAA1: " + scenario.getSourceTagNames());
-            //CONVERT CUCUMBER OPTIONS TO VARIABLE TO OBTAIN THE TAGS
-            logger.info("WAAAAAA2: " + System.getProperty("cucumber.options"));
-            //readTagsRunner(scenario);
+            String strTags = System.getProperty("cucumber.options").split(" datafile/features/")[0];
+            readTagsRunner(strTags);
             // OWASP ZAP Configuration
             if (owasp) {
                 configOwasp();
@@ -77,12 +68,13 @@ class WebDriverManager {
             webDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
             webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             logger.info("-------------------------------------------------------------------------");
-            logger.info("Pending Scenarios: " + numberOfScenarios);
+            logger.info("Scenario Number: " + numberOfScenarios);
+            logger.info("Scenario ID: " + scenario.getId());
         }
         return webDriver;
     }
 
-    public static void closeDriver(Scenario scenario) {
+    static void closeDriver(Scenario scenario) {
         if (webDriver != null) {
             // Takes an ScreenShot
             byte[] screenShot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
@@ -90,12 +82,11 @@ class WebDriverManager {
             // -------------------------------------------------------
             // Quit the Driver
             logger.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
-            logger.info("Trying to quit the Scenario (" + scenario.getId() + ")");
+            logger.info("Trying to quit the Scenario");
             logger.info("-------------------------------------------------------------------------");
             webDriver.quit();
         }
         webDriver = null;
-        numberOfScenarios--;
     }
 
     // <editor-fold desc="DRIVER CONFIG">
@@ -112,64 +103,41 @@ class WebDriverManager {
         chromeOptions.addArguments("--browser.helperApps.neverAsk.openFile=" + fileMimeTypes);
         chromeOptions.addArguments("--browser.download.dir=C:\\Temp\\");
         chromeOptions.addArguments("--incognito");
+        logger.info("-------------------------------------------------------------------------");
         logger.info("Starting a normal Chrome WebDriver");
         webDriver = new ChromeDriver(chromeOptions);
     }
 
     private static void configFirefoxDriver() {
         System.setProperty("webdriver.gecko.driver", "src\\main\\resources\\geckodriver.exe");
+        //------- Remove Unnecessary Logs -------
+        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,"true");
+        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,"/dev/null");
+        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
+        //---------------------------------------
         firefoxOptions = new FirefoxOptions();
         firefoxOptions.addArguments("--browser.download.manager.showWhenStarting=false");
         firefoxOptions.addArguments("--browser.download.folderList=2");
         firefoxOptions.addArguments("--browser.helperApps.neverAsk.saveToDisk=" + fileMimeTypes);
         firefoxOptions.addArguments("--browser.helperApps.neverAsk.openFile=" + fileMimeTypes);
         firefoxOptions.addArguments("--browser.download.dir=C:\\Temp\\");
+        firefoxOptions.addArguments("--incognito");
+        logger.info("-------------------------------------------------------------------------");
         logger.info("Starting a normal Firefox WebDriver");
         webDriver = new FirefoxDriver(firefoxOptions);
     }
     // </editor-fold>
 
     // <editor-fold desc="READ TAGS">
-    private static void readTagsRunner(Scenario scenario) {
-//        try {
-//            Field field = scenario.getClass().getDeclaredField("reporter");
-//            field.setAccessible(true);
-//            JUnitReporter reporter = (JUnitReporter) field.get(scenario);
-//            Field executionRunnerField = reporter.getClass().getDeclaredField("executionUnitRunner");
-//            executionRunnerField.setAccessible(true);
-//            ExecutionUnitRunner executionUnitRunner = (ExecutionUnitRunner) executionRunnerField.get(reporter);
-//            Field runtimeField = executionUnitRunner.getClass().getDeclaredField("runtime");
-//            runtimeField.setAccessible(true);
-//            Runtime runtime = (Runtime) runtimeField.get(executionUnitRunner);
-//            Field resourceLoaderField = runtime.getClass().getDeclaredField("resourceLoader");
-//            resourceLoaderField.setAccessible(true);
-//            ResourceLoader resourceLoader = (ResourceLoader) resourceLoaderField.get(runtime);
-//            Field runtimeOptionsField = runtime.getClass().getDeclaredField("runtimeOptions");
-//            runtimeOptionsField.setAccessible(true);
-//            RuntimeOptions runtimeOptions = (RuntimeOptions) runtimeOptionsField.get(runtime);
-//            for (Object obj : runtimeOptions.getTagFilters()) {
-//                switch (obj.toString().trim()) {
-//                    case "~@Chrome":
-//                        chrome = true;
-//                        break;
-//                    case "~@SeleniumGrid":
-//                        seleniumGrid = true;
-//                        break;
-//                    case "~@OWASP":
-//                        owasp = true;
-//                        break;
-//                }
-//            }
-//            // Only set the variable at the beginning
-//            if (numberOfScenarios <= 0) {
-//                List<CucumberFeature> features = runtimeOptions.cucumberFeatures(resourceLoader);
-//                for (CucumberFeature cucumberFeature : features) {
-//                    numberOfScenarios = numberOfScenarios + cucumberFeature.getFeatureElements().size();
-//                }
-//            }
-//        } catch (NoSuchFieldException | IllegalAccessException ex) {
-//            ex.printStackTrace();
-//        }
+    private static void readTagsRunner(String strTags) {
+        if (strTags.contains("~@Chrome") || strTags.contains("not @Chrome")) {
+            chrome = true;
+        } else if (strTags.contains("~@SeleniumGrid") || strTags.contains("not @SeleniumGrid")) {
+            seleniumGrid = true;
+        } else if (strTags.contains("~@OWASP") || strTags.contains("not @OWASP")) {
+            owasp = true;
+        }
+        numberOfScenarios++;
     }
     // </editor-fold>
 
@@ -190,13 +158,13 @@ class WebDriverManager {
         String Hub = "http://MIA38747JEN001.am.tmrk.corp:4444/wd/hub";
         logger.info("HUB: " + Hub);
         try {
-            WebDriver webDriver = new RemoteWebDriver(new URL(Hub), capabilities);
-            webDriver.manage().window().maximize();
-            webDriver.manage().deleteAllCookies();
-            webDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
-            webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
+            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(Hub), capabilities);
+            remoteWebDriver.manage().window().maximize();
+            remoteWebDriver.manage().deleteAllCookies();
+            remoteWebDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
+            remoteWebDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             // ---------- Getting Selenium Node -----------
-            String nodeIP = getNodeIP((RemoteWebDriver) webDriver);
+            String nodeIP = getNodeIP(remoteWebDriver);
             logger.info("NODE: " + nodeIP);
             // --------------------------------------------
         } catch (MalformedURLException e) {
