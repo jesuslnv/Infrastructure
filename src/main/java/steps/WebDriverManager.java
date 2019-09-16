@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -32,10 +33,6 @@ import java.util.logging.Level;
 
 class WebDriverManager {
     private static final Logger logger = LogManager.getLogger();
-    private static final String fileMimeTypes = "application/msword," + "text/plain," + "text/html," + "image/jpeg," + "image/png," + "application/csv," + "text/csv," + "application/octet-stream," + "application/csv," + "pdf,"
-            + "application/pdf," + "application/x-pdf," + "application/acrobat," + "application/vnd.pdf," + "text/pdf," + "text/x-pdf," + "application/vnd.adobe.xfdf," + "application/vnd.fdf,"
-            + "application/vnd.adobe.xdp+xml," + "application/xml," + "text/xml," + "application/excel," + "application/vnd.ms-excel," + "application/msexcel," + "application/x-msexcel," + "application/x-ms-excel,"
-            + "application/x-excel," + "application/x-dos_ms_excel," + "application/xls," + "application/x-xls," + "text/xls," + "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     private static WebDriver webDriver = null;
     private static ChromeOptions chromeOptions;
     private static FirefoxOptions firefoxOptions;
@@ -47,21 +44,13 @@ class WebDriverManager {
         if (webDriver == null) {
             String strTags = System.getProperty("cucumber.options").split(" datafile/features/")[0];
             readTagsRunner(strTags);
-            // OWASP ZAP Configuration
-            if (owasp) {
-                configOwasp();
-            }
-            // Selenium Grid configuration
+            //Selenium Grid configuration
             if (seleniumGrid) {
                 configSeleniumGrid();
                 return webDriver;
             } else {
-                // Normal WebDriver Configuration
-                if (chrome) {
-                    configChromeDriver();
-                } else {
-                    configFirefoxDriver();
-                }
+                //Normal WebDriver Configuration
+                generalWebDriverConfiguration();
             }
             webDriver.manage().window().maximize();
             webDriver.manage().deleteAllCookies();
@@ -76,11 +65,11 @@ class WebDriverManager {
 
     static void closeDriver(Scenario scenario) {
         if (webDriver != null) {
-            // Takes an ScreenShot
+            //Takes an ScreenShot
             byte[] screenShot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             scenario.embed(screenShot, "image/png");
-            // -------------------------------------------------------
-            // Quit the Driver
+            //-------------------------------------------------------
+            //Quit the Driver
             logger.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
             logger.info("Trying to quit the Scenario");
             logger.info("-------------------------------------------------------------------------");
@@ -89,46 +78,44 @@ class WebDriverManager {
         webDriver = null;
     }
 
-    // <editor-fold desc="DRIVER CONFIG">
-    private static void configChromeDriver() {
+    //<editor-fold desc="DRIVER CONFIG">
+    private static void generalWebDriverConfiguration() {
+        //------- Configure Webdriver Executable Location -------
         System.setProperty("webdriver.chrome.driver", "src\\main\\resources\\chromedriver.exe");
-        //------- Remove Unnecessary Logs -------
-        System.setProperty("webdriver.chrome.silentOutput", "true");
-        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
-        //---------------------------------------
-        chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--browser.download.manager.showWhenStarting=false");
-        chromeOptions.addArguments("--browser.download.folderList=2");
-        chromeOptions.addArguments("--browser.helperApps.neverAsk.saveToDisk=" + fileMimeTypes);
-        chromeOptions.addArguments("--browser.helperApps.neverAsk.openFile=" + fileMimeTypes);
-        chromeOptions.addArguments("--browser.download.dir=C:\\Temp\\");
-        chromeOptions.addArguments("--incognito");
-        logger.info("-------------------------------------------------------------------------");
-        logger.info("Starting a normal Chrome WebDriver");
-        webDriver = new ChromeDriver(chromeOptions);
-    }
-
-    private static void configFirefoxDriver() {
         System.setProperty("webdriver.gecko.driver", "src\\main\\resources\\geckodriver.exe");
-        //------- Remove Unnecessary Logs -------
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE,"true");
-        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,"/dev/null");
+        //--------------- Remove Unnecessary Logs ---------------
+        System.setProperty("webdriver.chrome.silentOutput", "true");
+        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
-        //---------------------------------------
+        //---------------- Define Driver Options ----------------
+        chromeOptions = new ChromeOptions();
         firefoxOptions = new FirefoxOptions();
-        firefoxOptions.addArguments("--browser.download.manager.showWhenStarting=false");
-        firefoxOptions.addArguments("--browser.download.folderList=2");
-        firefoxOptions.addArguments("--browser.helperApps.neverAsk.saveToDisk=" + fileMimeTypes);
-        firefoxOptions.addArguments("--browser.helperApps.neverAsk.openFile=" + fileMimeTypes);
-        firefoxOptions.addArguments("--browser.download.dir=C:\\Temp\\");
-        firefoxOptions.addArguments("--incognito");
-        logger.info("-------------------------------------------------------------------------");
-        logger.info("Starting a normal Firefox WebDriver");
-        webDriver = new FirefoxDriver(firefoxOptions);
+        for (String tmpArgument : Parameters.SELENIUM_BROWSER_ARGUMENTS) {
+            chromeOptions.addArguments(tmpArgument);
+            firefoxOptions.addArguments(tmpArgument);
+        }
+        //----------------- Configure OWASP ZAP -----------------
+        if (owasp) {
+            Proxy proxy = new Proxy();
+            proxy.setHttpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setFtpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setSslProxy(Parameters.OWASP_ZAP_HTTP_PROXY);
+            chromeOptions.setCapability(CapabilityType.PROXY, proxy);
+            firefoxOptions.setCapability(CapabilityType.PROXY, proxy);
+        }
+        //-------------------------------------------------------
+        if (chrome) {
+            logger.info("-------------------------------------------------------------------------");
+            logger.info("Starting a normal Chrome WebDriver");
+            webDriver = new ChromeDriver(chromeOptions);
+        } else {
+            logger.info("-------------------------------------------------------------------------");
+            logger.info("Starting a normal Firefox WebDriver");
+            webDriver = new FirefoxDriver(firefoxOptions);
+        }
     }
-    // </editor-fold>
+    //</editor-fold>
 
-    // <editor-fold desc="READ TAGS">
+    //<editor-fold desc="READ TAGS">
     private static void readTagsRunner(String strTags) {
         if (strTags.contains("~@Chrome") || strTags.contains("not @Chrome")) {
             chrome = true;
@@ -139,34 +126,31 @@ class WebDriverManager {
         }
         numberOfScenarios++;
     }
-    // </editor-fold>
+    //</editor-fold>
 
-    // <editor-fold desc="OWASP ZAP">
-    private static void configOwasp() {
-        String httpProxy = "10.1.57.165:9090";
-        Proxy proxy = new Proxy();
-        proxy.setHttpProxy(httpProxy).setFtpProxy(httpProxy).setSslProxy(httpProxy);
-        chromeOptions.setCapability(CapabilityType.PROXY, proxy);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="SELENIUM GRID">
+    //<editor-fold desc="SELENIUM GRID">
     private static void configSeleniumGrid() {
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-        // Server where the HUB is Running
+        DesiredCapabilities desiredCapabilities = null;
+        if (chrome) {
+            desiredCapabilities = DesiredCapabilities.chrome();
+            desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
+        } else {
+            desiredCapabilities = DesiredCapabilities.firefox();
+            desiredCapabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, firefoxOptions);
+        }
+        //Server where the HUB is Running
         String Hub = "http://MIA38747JEN001.am.tmrk.corp:4444/wd/hub";
         logger.info("HUB: " + Hub);
         try {
-            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(Hub), capabilities);
+            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(Hub), desiredCapabilities);
             remoteWebDriver.manage().window().maximize();
             remoteWebDriver.manage().deleteAllCookies();
             remoteWebDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
             remoteWebDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
-            // ---------- Getting Selenium Node -----------
+            //---------- Getting Selenium Node -----------
             String nodeIP = getNodeIP(remoteWebDriver);
             logger.info("NODE: " + nodeIP);
-            // --------------------------------------------
+            //--------------------------------------------
         } catch (MalformedURLException e) {
             logger.info("Error Starting Remote Driver: " + e.getMessage());
         }
@@ -196,5 +180,5 @@ class WebDriverManager {
         }
         return hostFound;
     }
-    // </editor-fold>
+    //</editor-fold>
 }
