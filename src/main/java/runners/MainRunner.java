@@ -14,7 +14,7 @@ public class MainRunner implements Serializable {
     public static void main(String[] args) {
         if (args.length == 0) {
             args = new String[1];
-            args[0] = "-t @DEV -t @Smoke";
+            args[0] = "-t @DEV -t @Smoke -t 'not @Chrome'";
             args[0] = args[0] + ";-p json:target/smoke/Infrastructure/Infrastructure.json";
             args[0] = args[0] + " -p html:target/smoke/Infrastructure/html-report";
         }
@@ -47,7 +47,7 @@ public class MainRunner implements Serializable {
     //<editor-fold desc="BASE CLASS TO RUN CUCUMBER">
     @RunWith(Cucumber.class)
     @CucumberOptions(glue = "steps", tags = {"@DEV"})
-    public class CucumberBase {
+    public static class CucumberBase {
     }
     //</editor-fold>
 }
