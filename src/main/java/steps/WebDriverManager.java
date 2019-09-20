@@ -97,6 +97,7 @@ class WebDriverManager {
         }
         //----------------- Configure OWASP ZAP -----------------
         if (owasp) {
+            logger.info("Setting up OWASP ZAP");
             Proxy proxy = new Proxy();
             proxy.setHttpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setFtpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setSslProxy(Parameters.OWASP_ZAP_HTTP_PROXY);
             chromeOptions.setCapability(CapabilityType.PROXY, proxy);
@@ -117,11 +118,16 @@ class WebDriverManager {
 
     //<editor-fold desc="READ TAGS">
     private static void readTagsRunner(String strTags) {
+        //Detect Chrome Browser
         if (strTags.contains("~@Chrome") || strTags.contains("not @Chrome")) {
             chrome = true;
-        } else if (strTags.contains("~@SeleniumGrid") || strTags.contains("not @SeleniumGrid")) {
+        }
+        //Detect Selenium Grid
+        if (strTags.contains("~@SeleniumGrid") || strTags.contains("not @SeleniumGrid")) {
             seleniumGrid = true;
-        } else if (strTags.contains("~@OWASP") || strTags.contains("not @OWASP")) {
+        }
+        //Detect OWASP ZAP
+        if (strTags.contains("~@OWASP") || strTags.contains("not @OWASP")) {
             owasp = true;
         }
         numberOfScenarios++;

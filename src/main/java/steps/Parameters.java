@@ -11,5 +11,5 @@ public class Parameters {
             "--browser.download.folderList=2", "--browser.download.dir=C:\\Temp\\", "--incognito",
             "--browser.helperApps.neverAsk.saveToDisk=" + FILE_MIME_TYPES,
             "--browser.helperApps.neverAsk.openFile=" + FILE_MIME_TYPES};
-    public final static String OWASP_ZAP_HTTP_PROXY = "10.1.57.165:9090";
+    public final static String OWASP_ZAP_HTTP_PROXY = "localhost:9090";
 }
