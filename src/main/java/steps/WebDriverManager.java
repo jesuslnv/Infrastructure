@@ -1,6 +1,7 @@
 package steps;
 
 import io.cucumber.core.api.Scenario;
+import bddSecurity.OwaspZAPConfig;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -73,6 +74,8 @@ class WebDriverManager {
             logger.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
             logger.info("Trying to quit the Scenario");
             logger.info("-------------------------------------------------------------------------");
+            OwaspZAPConfig.runPassiveScan();
+            //OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
             webDriver.quit();
         }
         webDriver = null;
@@ -98,8 +101,7 @@ class WebDriverManager {
         //----------------- Configure OWASP ZAP -----------------
         if (owasp) {
             logger.info("Setting up OWASP ZAP");
-            Proxy proxy = new Proxy();
-            proxy.setHttpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setFtpProxy(Parameters.OWASP_ZAP_HTTP_PROXY).setSslProxy(Parameters.OWASP_ZAP_HTTP_PROXY);
+            Proxy proxy = OwaspZAPConfig.getOwaspZAPProxyConfig();
             chromeOptions.setCapability(CapabilityType.PROXY, proxy);
             firefoxOptions.setCapability(CapabilityType.PROXY, proxy);
         }
