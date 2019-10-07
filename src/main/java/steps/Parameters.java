@@ -1,5 +1,7 @@
 package steps;
 
+import java.util.HashMap;
+
 public class Parameters {
     //File MIME Types to be directly accepted and downloaded
     private final static String FILE_MIME_TYPES = "application/msword," + "text/plain," + "text/html," + "image/jpeg," + "image/png," + "application/csv," + "text/csv," + "application/octet-stream," + "application/csv," + "pdf,"
@@ -15,25 +17,32 @@ public class Parameters {
     public final static int OWASP_ZAP_HTTP_PORT = 9090;
     public final static String OWASP_ZAP_CONFIG_STRENGTH = "High";
     public final static String OWASP_ZAP_CONFIG_THRESHOLD = "Low";
-    public final static String OWASP_ZAP_ATTACK_CODE__DIRECTORY_BROWSING = "0";
-    public final static String OWASP_ZAP_ATTACK_CODE__CROSS_SITE_SCRIPTING = "40012,40014,40016,40017";
-    public final static String OWASP_ZAP_ATTACK_CODE__SQL_INJECTION = "40018";
-    public final static String OWASP_ZAP_ATTACK_CODE__PATH_TRAVERSAL = "6";
-    public final static String owasp_zap_attack_code__remote_file_inclusion = "7";
-    public final static String OWASP_ZAP_ATTACK_CODE__SERVER_SIDE_INCLUDE = "40009";
-    public final static String OWASP_ZAP_ATTACK_CODE__SCRIPT_ACTIVE_SCAN_RULES = "50000";
-    public final static String OWASP_ZAP_ATTACK_CODE__SERVER_SIDE_CODE_INJECTION = "90019";
-    public final static String OWASP_ZAP_ATTACK_CODE__REMOTE_OS_COMMAND_INJECTION = "90020";
-    public final static String OWASP_ZAP_ATTACK_CODE__EXTERNAL_REDIRECT = "20019";
-    public final static String OWASP_ZAP_ATTACK_CODE__CRLF_INJECTION = "40003";
-    public final static String OWASP_ZAP_ATTACK_CODE__SOURCE_CODE_DISCLOSURE = "42,10045,20017";
-    public final static String OWASP_ZAP_ATTACK_CODE__SHELL_SHOCK = "10048";
-    public final static String OWASP_ZAP_ATTACK_CODE__REMOTE_CODE_EXECUTION = "20018";
-    public final static String OWASP_ZAP_ATTACK_CODE__LDAP_INJECTION = "40015";
-    public final static String OWASP_ZAP_ATTACK_CODE__XPATH_INJECTION = "90021";
-    public final static String OWASP_ZAP_ATTACK_CODE__XML_EXTERNAL_ENTITY = "90023";
-    public final static String OWASP_ZAP_ATTACK_CODE__PADDING_ORACLE = "90024";
-    public final static String OWASP_ZAP_ATTACK_CODE__EL_INJECTION = "90025";
-    public final static String OWASP_ZAP_ATTACK_CODE__INSECURE_HTTP_METHODS = "90028";
-    public final static String OWASP_ZAP_ATTACK_CODE__PARAMETER_POLLUTION = "20014";
+    public final static HashMap<String, String> OWASP_ZAP_ATTACK_CODES = new HashMap<>(){{
+        put("DIRECTORY_BROWSING","0");
+        put("PATH_TRAVERSAL","6");
+        put("REMOTE_FILE_INCLUSION","7");
+        put("SOURCE_CODE_DISCLOSURE","10045");
+        put("REMOTE_CODE_EXECUTION","20018");
+        put("EXTERNAL_REDIRECT","20019");
+        put("BUFFER_OVERFLOW","30001");
+        put("FORMAT_STRING_ERROR","30002");
+        put("CRLF_INJECTION","40003");
+        put("PARAMETER_TAMPERING","40008");
+        put("SERVER_SIDE_INCLUDE","40009");
+        put("CROSS_SITE_SCRIPTING","40012,40014,40016,40017");
+        put("SQL_INJECTION","40018");
+        put("SCRIPT_ACTIVE_SCAN_RULES","50000");
+        put("SERVER_SIDE_CODE_INJECTION","90019");
+        put("REMOTE_OS_COMMAND_INJECTION","90020");
+        //put("REMOTE_CODE_EXECUTION","20018");
+        //put("LDAP_INJECTION","40015");
+        //put("INSECURE_HTTP_METHODS","90028");
+        //put("XPATH_INJECTION","90021");
+        //put("PADDING_ORACLE","90024");
+        //put("SHELL_SHOCK","10048");
+        //put("XML_EXTERNAL_ENTITY","90023");
+        //put("PARAMETER_POLLUTION","20014");
+        //put("EL_INJECTION","90025");
+        //put("PADDING_ORACLE","90024");
+    }};
 }

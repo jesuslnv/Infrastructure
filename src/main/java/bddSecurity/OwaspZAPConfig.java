@@ -11,7 +11,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class OwaspZAPConfig {
@@ -26,85 +25,106 @@ public class OwaspZAPConfig {
         return proxy;
     }
 
-    private static void runPassiveScan() {
-        LOGGER.info("Starting Passive Scan");
+    private static void runPassiveScan(String riskLevel) {
+        LOGGER.info("--------------------------Starting Passive Scan--------------------------");
         try {
-            //Remove all Historical Scans
-            clientApi.ascan.removeAllScans();
+            //Remove all Historical Alerts generated Before
+            clientApi.alert.deleteAllAlerts();
             //Enable all Scanners in Passive Mode
             clientApi.pscan.enableAllScanners();
             ApiResponse apiResponse = clientApi.pscan.recordsToScan();
             int scanTime = 0;
             while (!apiResponse.toString().equals("0")) {
-                apiResponse = clientApi.pscan.recordsToScan();
-                scanTime++;
                 Thread.sleep(1000);
+                scanTime++;
+                apiResponse = clientApi.pscan.recordsToScan();
             }
             LOGGER.info("Passive Scan Completed in " + scanTime + " seconds");
+            LOGGER.info("-------------------------------------------------------------------------");
+            //Call the function to print the Alerts based on riskLevel settled
+            printSecurityAlerts(riskLevel);
         } catch (ClientApiException | InterruptedException ex) {
             LOGGER.error("Passive Scan Error: " + ex.getMessage());
+            LOGGER.info("-------------------------------------------------------------------------");
         }
     }
 
-    public static void runActiveScan(String urlToScan) {
-        LOGGER.info("Starting Active Scan to URL: " + urlToScan);
-        LOGGER.info("WEWE: " + clientApi.ascan);
+    private static void runActiveScan(String urlToScan, String scanTypeName, String scanTypeId, String riskLevel) {
+        LOGGER.info("--------------------------Starting Active Scan---------------------------");
+        LOGGER.info("Scanning URL: " + urlToScan);
+        LOGGER.info("Scan Type: " + scanTypeName);
+        LOGGER.info("Scan Id: " + scanTypeId);
         try {
-            String scannerIds = Parameters.OWASP_ZAP_ATTACK_CODE__DIRECTORY_BROWSING;
-            clientApi.ascan.enableScanners(scannerIds, null);
-            for (String id : scannerIds.split(",")) {
+            //Remove all Historical Alerts generated Before
+            clientApi.alert.deleteAllAlerts();
+            //Disable all other Scanners by Default
+            clientApi.ascan.disableAllScanners(null);
+            //Set Attack Mode in OwaspZap
+            clientApi.core.setMode("attack");
+            //Enable specific Active Scanner
+            clientApi.ascan.enableScanners(scanTypeId, null);
+            for (String id : scanTypeId.split(",")) {
                 clientApi.ascan.setScannerAttackStrength(id, Parameters.OWASP_ZAP_CONFIG_STRENGTH, null);
                 clientApi.ascan.setScannerAlertThreshold(id, Parameters.OWASP_ZAP_CONFIG_THRESHOLD, null);
             }
             ApiResponse apiResponse = clientApi.ascan.scan(urlToScan, "True", "False", null, null, null);
-            int progress = 0;
             String scanId = ((ApiResponseElement) apiResponse).getValue();
+            int progress = 0;
+            int scanTime = 0;
             while (progress < 100) {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
+                scanTime++;
                 progress = Integer.parseInt(((ApiResponseElement) clientApi.ascan.status(scanId)).getValue());
-                LOGGER.info("Active Scan progress: " + progress + "%");
+                //LOGGER.info("Active Scan progress: " + progress + "%");
             }
-            LOGGER.info("Active Scan Completed");
+            LOGGER.info("Active Scan Completed in " + scanTime + " seconds");
+            LOGGER.info("-------------------------------------------------------------------------");
+            //Call the function to print the Alerts based on riskLevel settled
+            printSecurityAlerts(riskLevel);
         } catch (ClientApiException | InterruptedException ex) {
             LOGGER.error("Active Scan Error: " + ex.getMessage());
+            LOGGER.info("-------------------------------------------------------------------------");
         }
+    }
+
+    private static void runSpiderScan(String urlToScan, String riskLevel) {
+        LOGGER.info("--------------------------Starting Spider Scan---------------------------");
+        LOGGER.info("Scanning URL: " + urlToScan);
+        try {
+            //Remove all Historical Alerts generated Before
+            clientApi.alert.deleteAllAlerts();
+            //Enable specific Active Scanner
+            ApiResponse apiResponse = clientApi.spider.scan(urlToScan, null, null, null, null);
+            String scanId = ((ApiResponseElement) apiResponse).getValue();
+            int progress = 0;
+            int scanTime = 0;
+            //Polling the status until it completes
+            while (progress < 100) {
+                Thread.sleep(1000);
+                scanTime++;
+                progress = Integer.parseInt(((ApiResponseElement) clientApi.spider.status(scanId)).getValue());
+                //LOGGER.info("Spider progress : " + progress + "%");
+            }
+            LOGGER.info("Spider Scan Completed in " + scanTime + " seconds");
+            LOGGER.info("-------------------------------------------------------------------------");
+            //Call the function to print the Alerts based on riskLevel settled
+            printSecurityAlerts(riskLevel);
+        } catch (ClientApiException | InterruptedException ex) {
+            LOGGER.error("Spider Scan Error: " + ex.getMessage());
+            LOGGER.info("-------------------------------------------------------------------------");
+        }
+        LOGGER.info("-------------------------------------------------------------------------");
     }
 
     public static void runScanner(String urlToScan, String riskLevel) {
         //Run Passive Scan First (Because is the most basic and simple Scan)
-        runPassiveScan();
-        //Run Active Scan with specific Penetration Test defined
-        runActiveScan(urlToScan);
-        LOGGER.info("Scanning: " + urlToScan);
-        try {
-            clientApi.ascan.scan(urlToScan, "true", "false", null, null, null);
-            LOGGER.info("wewewewewewewe 2");
-            int complete = 0;
-            ApiResponseList response = (ApiResponseList) clientApi.ascan.scans();
-            int scanId = 0;
-            for (ApiResponse rawResponse : response.getItems()) {
-                scanId = Integer.parseInt(((ApiResponseSet) rawResponse).getStringValue("id"));
-            }
-            LOGGER.info("wewewewewewewe 3");
-            while (complete < 100) {
-                response = (ApiResponseList) clientApi.ascan.scans();
-                List<ScanInfo> lstScanInfos = getOrderedScanInfoList(response);
-                complete = getScanInfoById(lstScanInfos, scanId).getProgress();
-                LOGGER.debug("Scan is " + complete + "% complete.");
-                Thread.sleep(1000);
-            }
-            LOGGER.info("wewewewewewewe 4");
-            //----------------------------------------------------------------
-            //Configure SPIDER in ClientAPI
-            clientApi.spider.setOptionMaxDepth(5);
-            clientApi.spider.setOptionThreadCount(10);
-            clientApi.spider.scan(urlToScan, null, "true", "Default Context", null);
-            waitForSpiderToComplete();
-            //----------------------------------------------------------------
-            printSecurityAlerts(riskLevel);
-        } catch (InterruptedException | ClientApiException ex) {
-            LOGGER.error(ex.getMessage());
-        }
+        runPassiveScan(riskLevel);
+        //Run Active Scan with each specified Penetration Test
+        Parameters.OWASP_ZAP_ATTACK_CODES.forEach((attackType, attackTypeId) -> {
+            runActiveScan(urlToScan, attackType, attackTypeId, riskLevel);
+        });
+        //Run Spider Scan at Last
+        runSpiderScan(urlToScan, riskLevel);
     }
 
     private static void waitForSuccessfulConnectionToZap() {
@@ -146,54 +166,6 @@ public class OwaspZAPConfig {
         }
     }
 
-    private static void waitForSpiderToComplete() {
-        int status = 0;
-        int counter99 = 0; //hack to detect a ZAP spider that gets stuck on 99%
-        ApiResponseList response = null;
-        try {
-            response = (ApiResponseList) clientApi.spider.scans();
-            List<ScanInfo> lstScanInfos = getOrderedScanInfoList(response);
-            ScanInfo lastScanInfo = lstScanInfos.get(lstScanInfos.size() - 1);
-            int scanId = lastScanInfo.getId();
-            while (status < 100) {
-                response = (ApiResponseList) clientApi.spider.scans();
-                lstScanInfos = getOrderedScanInfoList(response);
-                status = getScanInfoById(lstScanInfos, scanId).getProgress();
-                if (status == 99) {
-                    counter99++;
-                }
-                if (counter99 > 10) {
-                    break;
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    LOGGER.error(ex.getMessage());
-                }
-            }
-        } catch (ClientApiException ex) {
-            LOGGER.error(ex.getMessage());
-        }
-    }
-
-    private static List<ScanInfo> getOrderedScanInfoList(ApiResponseList apiResponseList) {
-        List<ScanInfo> lstScanInfos = new ArrayList<>();
-        for (ApiResponse apiResponse : apiResponseList.getItems()) {
-            lstScanInfos.add(new ScanInfo((ApiResponseSet) apiResponse));
-        }
-        Collections.sort(lstScanInfos);
-        return lstScanInfos;
-    }
-
-    private static ScanInfo getScanInfoById(List<ScanInfo> lstScanInfos, int scanId) {
-        for (ScanInfo scanInfo : lstScanInfos) {
-            if (scanInfo.getId() == scanId) {
-                return scanInfo;
-            }
-        }
-        return null;
-    }
-
     private static void printSecurityAlerts(String riskLevel) {
         //Get alert List to shown in the LOG
         List<Alert> lstAlerts = new ArrayList<>();
@@ -225,6 +197,9 @@ public class OwaspZAPConfig {
         //If some vulnerabilities found they will be shown in LOG
         if (lstAlerts.size() > 0) {
             LOGGER.warn(lstAlerts.size() + " " + risk + " vulnerabilities found.\nDetails:\n" + details);
+        } else {
+            LOGGER.info("No " + riskLevel + " or Higher alerts found");
         }
+        LOGGER.info("-------------------------------------------------------------------------");
     }
 }

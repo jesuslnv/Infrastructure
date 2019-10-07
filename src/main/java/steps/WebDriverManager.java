@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 class WebDriverManager {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private static WebDriver webDriver = null;
     private static ChromeOptions chromeOptions;
     private static FirefoxOptions firefoxOptions;
@@ -57,9 +57,9 @@ class WebDriverManager {
             webDriver.manage().deleteAllCookies();
             webDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
             webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
-            logger.info("-------------------------------------------------------------------------");
-            logger.info("Scenario Number: " + numberOfScenarios);
-            logger.info("Scenario ID: " + scenario.getId());
+            LOGGER.info("-------------------------------------------------------------------------");
+            LOGGER.info("Scenario Number: " + numberOfScenarios);
+            LOGGER.info("Scenario ID: " + scenario.getId());
         }
         return webDriver;
     }
@@ -71,11 +71,10 @@ class WebDriverManager {
             scenario.embed(screenShot, "image/png");
             //-------------------------------------------------------
             //Quit the Driver
-            logger.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
-            logger.info("Trying to quit the Scenario");
-            logger.info("-------------------------------------------------------------------------");
-            OwaspZAPConfig.runPassiveScan();
-            //OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
+            LOGGER.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
+            LOGGER.info("Trying to quit the Scenario");
+            LOGGER.info("-------------------------------------------------------------------------");
+            OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
             webDriver.quit();
         }
         webDriver = null;
@@ -100,19 +99,19 @@ class WebDriverManager {
         }
         //----------------- Configure OWASP ZAP -----------------
         if (owasp) {
-            logger.info("Setting up OWASP ZAP");
+            LOGGER.info("Setting up OWASP ZAP");
             Proxy proxy = OwaspZAPConfig.getOwaspZAPProxyConfig();
             chromeOptions.setCapability(CapabilityType.PROXY, proxy);
             firefoxOptions.setCapability(CapabilityType.PROXY, proxy);
         }
         //-------------------------------------------------------
         if (chrome) {
-            logger.info("-------------------------------------------------------------------------");
-            logger.info("Starting a normal Chrome WebDriver");
+            LOGGER.info("-------------------------------------------------------------------------");
+            LOGGER.info("Starting a normal Chrome WebDriver");
             webDriver = new ChromeDriver(chromeOptions);
         } else {
-            logger.info("-------------------------------------------------------------------------");
-            logger.info("Starting a normal Firefox WebDriver");
+            LOGGER.info("-------------------------------------------------------------------------");
+            LOGGER.info("Starting a normal Firefox WebDriver");
             webDriver = new FirefoxDriver(firefoxOptions);
         }
     }
@@ -148,7 +147,7 @@ class WebDriverManager {
         }
         //Server where the HUB is Running
         String Hub = "http://MIA38747JEN001.am.tmrk.corp:4444/wd/hub";
-        logger.info("HUB: " + Hub);
+        LOGGER.info("HUB: " + Hub);
         try {
             RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(Hub), desiredCapabilities);
             remoteWebDriver.manage().window().maximize();
@@ -157,10 +156,10 @@ class WebDriverManager {
             remoteWebDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             //---------- Getting Selenium Node -----------
             String nodeIP = getNodeIP(remoteWebDriver);
-            logger.info("NODE: " + nodeIP);
+            LOGGER.info("NODE: " + nodeIP);
             //--------------------------------------------
         } catch (MalformedURLException e) {
-            logger.info("Error Starting Remote Driver: " + e.getMessage());
+            LOGGER.info("Error Starting Remote Driver: " + e.getMessage());
         }
     }
 
