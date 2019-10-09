@@ -1,7 +1,6 @@
 package steps;
 
 import io.cucumber.core.api.Scenario;
-import bddSecurity.OwaspZAPConfig;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -27,7 +26,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -74,7 +75,6 @@ class WebDriverManager {
             LOGGER.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
             LOGGER.info("Trying to quit the Scenario");
             LOGGER.info("-------------------------------------------------------------------------");
-            OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
             webDriver.quit();
         }
         webDriver = null;
@@ -100,7 +100,10 @@ class WebDriverManager {
         //----------------- Configure OWASP ZAP -----------------
         if (owasp) {
             LOGGER.info("Setting up OWASP ZAP");
-            Proxy proxy = OwaspZAPConfig.getOwaspZAPProxyConfig();
+            waitForSuccessfulConnectionToZap();
+            Proxy proxy = new Proxy();
+            String httpProxy = Parameters.OWASP_ZAP_HTTP_IP + ":" + Parameters.OWASP_ZAP_HTTP_PORT;
+            proxy.setHttpProxy(httpProxy).setFtpProxy(httpProxy).setSslProxy(httpProxy);
             chromeOptions.setCapability(CapabilityType.PROXY, proxy);
             firefoxOptions.setCapability(CapabilityType.PROXY, proxy);
         }
@@ -113,6 +116,47 @@ class WebDriverManager {
             LOGGER.info("-------------------------------------------------------------------------");
             LOGGER.info("Starting a normal Firefox WebDriver");
             webDriver = new FirefoxDriver(firefoxOptions);
+        }
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="OWASP ZAP CONFIG">
+    private static void waitForSuccessfulConnectionToZap() {
+        int timeoutInMs = 15000;
+        int connectionTimeoutInMs = timeoutInMs;
+        boolean connectionSuccessful = false;
+        long startTime = System.currentTimeMillis();
+        Socket socket = null;
+        while (!connectionSuccessful) {
+            try {
+                LOGGER.info("Attempting to connect to ZAP API on: " + Parameters.OWASP_ZAP_HTTP_IP + " port: " + Parameters.OWASP_ZAP_HTTP_PORT);
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(Parameters.OWASP_ZAP_HTTP_IP, Parameters.OWASP_ZAP_HTTP_PORT), connectionTimeoutInMs);
+                connectionSuccessful = true;
+                LOGGER.info("Successfully connected to ZAP");
+            } catch (IOException ignore) {
+                //Wait 1 second before trying to connect again
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    LOGGER.error(ex.getMessage());
+                }
+                //Verify if the elapsed time didn't exceed the limit
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                if (elapsedTime >= timeoutInMs) {
+                    LOGGER.error("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
+                    throw new RuntimeException("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
+                }
+                connectionTimeoutInMs = (int) (timeoutInMs - elapsedTime);
+            } finally {
+                if (socket != null) {
+                    try {
+                        socket.close();
+                    } catch (IOException ex) {
+                        LOGGER.error(ex.getMessage());
+                    }
+                }
+            }
         }
     }
     //</editor-fold>

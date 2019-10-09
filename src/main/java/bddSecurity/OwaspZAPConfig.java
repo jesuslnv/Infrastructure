@@ -16,13 +16,23 @@ import java.util.List;
 public class OwaspZAPConfig {
     private static final Logger LOGGER = LogManager.getLogger();
     private static ClientApi clientApi = new ClientApi(Parameters.OWASP_ZAP_HTTP_IP, Parameters.OWASP_ZAP_HTTP_PORT);
+    private static String previousUrlScanned = "";
 
-    public static Proxy getOwaspZAPProxyConfig() {
-        waitForSuccessfulConnectionToZap();
-        Proxy proxy = new Proxy();
-        String httpProxy = Parameters.OWASP_ZAP_HTTP_IP + ":" + Parameters.OWASP_ZAP_HTTP_PORT;
-        proxy.setHttpProxy(httpProxy).setFtpProxy(httpProxy).setSslProxy(httpProxy);
-        return proxy;
+    public static void runScanner(String urlToScan, String riskLevel) {
+        //Verify if the "urlToScan" is equals to the "previousUrlScanned" to avoid multiple scans to the same URL.
+        if (urlToScan.equals(previousUrlScanned)) {
+            return;
+        }
+        //Run Passive Scan First (Because is the most basic and simple Scan)
+        runPassiveScan(riskLevel);
+        //Run Active Scan with each specified Penetration Test
+        Parameters.OWASP_ZAP_ATTACK_CODES.forEach((attackType, attackTypeId) -> {
+            runActiveScan(urlToScan, attackType, attackTypeId, riskLevel);
+        });
+        //Run Spider Scan at Last
+        runSpiderScan(urlToScan, riskLevel);
+        //Set the current URL scanned to the previous
+        previousUrlScanned = urlToScan;
     }
 
     private static void runPassiveScan(String riskLevel) {
@@ -114,56 +124,6 @@ public class OwaspZAPConfig {
             LOGGER.info("-------------------------------------------------------------------------");
         }
         LOGGER.info("-------------------------------------------------------------------------");
-    }
-
-    public static void runScanner(String urlToScan, String riskLevel) {
-        //Run Passive Scan First (Because is the most basic and simple Scan)
-        runPassiveScan(riskLevel);
-        //Run Active Scan with each specified Penetration Test
-        Parameters.OWASP_ZAP_ATTACK_CODES.forEach((attackType, attackTypeId) -> {
-            runActiveScan(urlToScan, attackType, attackTypeId, riskLevel);
-        });
-        //Run Spider Scan at Last
-        runSpiderScan(urlToScan, riskLevel);
-    }
-
-    private static void waitForSuccessfulConnectionToZap() {
-        int timeoutInMs = 15000;
-        int connectionTimeoutInMs = timeoutInMs;
-        boolean connectionSuccessful = false;
-        long startTime = System.currentTimeMillis();
-        Socket socket = null;
-        while (!connectionSuccessful) {
-            try {
-                LOGGER.info("Attempting to connect to ZAP API on: " + Parameters.OWASP_ZAP_HTTP_IP + " port: " + Parameters.OWASP_ZAP_HTTP_PORT);
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(Parameters.OWASP_ZAP_HTTP_IP, Parameters.OWASP_ZAP_HTTP_PORT), connectionTimeoutInMs);
-                connectionSuccessful = true;
-                LOGGER.info("Connected to ZAP");
-            } catch (SocketTimeoutException ignore) {
-                throw new RuntimeException("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
-            } catch (IOException ignore) {
-                // and keep trying but wait some time first...
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("The task was interrupted while sleeping between connection polling.", e);
-                }
-                long ellapsedTime = System.currentTimeMillis() - startTime;
-                if (ellapsedTime >= timeoutInMs) {
-                    throw new RuntimeException("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
-                }
-                connectionTimeoutInMs = (int) (timeoutInMs - ellapsedTime);
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     private static void printSecurityAlerts(String riskLevel) {

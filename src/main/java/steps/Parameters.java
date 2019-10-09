@@ -13,7 +13,7 @@ public class Parameters {
             "--browser.download.folderList=2", "--browser.download.dir=C:\\Temp\\", "--incognito",
             "--browser.helperApps.neverAsk.saveToDisk=" + FILE_MIME_TYPES,
             "--browser.helperApps.neverAsk.openFile=" + FILE_MIME_TYPES};
-    public final static String OWASP_ZAP_HTTP_IP = "localhost";
+    public final static String OWASP_ZAP_HTTP_IP = "127.0.0.1";
     public final static int OWASP_ZAP_HTTP_PORT = 9090;
     public final static String OWASP_ZAP_CONFIG_STRENGTH = "High";
     public final static String OWASP_ZAP_CONFIG_THRESHOLD = "Low";

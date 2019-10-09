@@ -1,7 +1,9 @@
 package steps;
 
+import bddSecurity.OwaspZAPConfig;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,6 +15,12 @@ import pages.BelatrixPage;
 
 public class ProjectSteps {
     private WebDriver webDriver;
+
+    @AfterStep
+    public void afterStep(Scenario scenario) {
+        System.out.println("SCENARIO: " + scenario.getUri());
+        OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
+    }
 
     @Before
     public void before(Scenario scenario) {
