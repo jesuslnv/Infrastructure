@@ -1,6 +1,5 @@
 package steps;
 
-import bddSecurity.OwaspZAPConfig;
 import io.cucumber.core.api.Scenario;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterStep;
@@ -12,14 +11,19 @@ import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import pages.Belatrix.MyFilesPage;
 import pages.BelatrixPage;
+import services.PenetrationTesting;
 
 public class ProjectSteps {
     private WebDriver webDriver;
 
     @AfterStep
     public void afterStep(Scenario scenario) {
-        System.out.println("SCENARIO: " + scenario.getUri());
-        OwaspZAPConfig.runScanner(webDriver.getCurrentUrl(), "MEDIUM");
+        PenetrationTesting.HTTP_IP = Parameters.OWASP_ZAP_HTTP_IP;
+        PenetrationTesting.HTTP_PORT = Parameters.OWASP_ZAP_HTTP_PORT;
+        PenetrationTesting.SCANNER_STRENGTH = Parameters.OWASP_ZAP_CONFIG_STRENGTH;
+        PenetrationTesting.SCANNER_THRESHOLD = Parameters.OWASP_ZAP_CONFIG_THRESHOLD;
+        PenetrationTesting.RISK_LEVEL = "MEDIUM";
+        PenetrationTesting.runScanner(webDriver.getCurrentUrl());
     }
 
     @Before
