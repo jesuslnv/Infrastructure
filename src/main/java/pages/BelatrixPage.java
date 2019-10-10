@@ -25,7 +25,7 @@ public class BelatrixPage extends Page {
         textControl = new TextControl(webDriver, "//input[@id='username']");
         textControl.setText(user);
         textControl = new TextControl(webDriver, "//input[@id='password']");
-        textControl.setText(ParameterService.decryptData(pass));
+        textControl.setText(ParameterService.decryptString(pass));
         buttonControl = new ButtonControl(webDriver, "//button[@type='submit']");
         buttonControl.setWaitForClick(1);
         buttonControl.click();

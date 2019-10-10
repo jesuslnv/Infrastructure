@@ -11,28 +11,25 @@ import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import pages.Belatrix.MyFilesPage;
 import pages.BelatrixPage;
-import services.PenetrationTesting;
 
 public class ProjectSteps {
     private WebDriver webDriver;
 
     @AfterStep
     public void afterStep(Scenario scenario) {
-        PenetrationTesting.HTTP_IP = Parameters.OWASP_ZAP_HTTP_IP;
-        PenetrationTesting.HTTP_PORT = Parameters.OWASP_ZAP_HTTP_PORT;
-        PenetrationTesting.SCANNER_STRENGTH = Parameters.OWASP_ZAP_CONFIG_STRENGTH;
-        PenetrationTesting.SCANNER_THRESHOLD = Parameters.OWASP_ZAP_CONFIG_THRESHOLD;
-        PenetrationTesting.RISK_LEVEL = "MEDIUM";
-        PenetrationTesting.runScanner(webDriver.getCurrentUrl());
+        //Run the Penetration Testing to detect anomalies
+        WebDriverManager.runPenetrationTesting(scenario);
     }
 
     @Before
     public void before(Scenario scenario) {
+        //Set the "webDriver" with a new one or the previous
         webDriver = WebDriverManager.getWebDriver(scenario);
     }
 
     @After
     public void after(Scenario scenario) {
+        //Closes the Driver when the Test is Finished
         WebDriverManager.closeDriver(scenario);
     }
 
