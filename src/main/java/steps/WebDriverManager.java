@@ -22,7 +22,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import services.PenetrationTesting;
+import services.PenetrationTestingService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -125,12 +125,12 @@ class WebDriverManager {
     public static void runPenetrationTesting(Scenario scenario) {
         //Only runs the scan if the "owasp" variable is TRUE
         if (owasp) {
-            PenetrationTesting.HTTP_IP = Parameters.OWASP_ZAP_HTTP_IP;
-            PenetrationTesting.HTTP_PORT = Parameters.OWASP_ZAP_HTTP_PORT;
-            PenetrationTesting.SCANNER_STRENGTH = "High";
-            PenetrationTesting.SCANNER_THRESHOLD = "Low";
-            PenetrationTesting.RISK_LEVEL = "MEDIUM";
-            PenetrationTesting.runScanner(webDriver.getCurrentUrl());
+            PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
+            PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
+            PenetrationTestingService.setScannerStrength("High");
+            PenetrationTestingService.setScannerThreshold("Low");
+            PenetrationTestingService.setRiskLevel("MEDIUM");
+            PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
         }
     }
 

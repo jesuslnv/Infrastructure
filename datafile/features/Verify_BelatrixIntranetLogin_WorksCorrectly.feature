@@ -10,4 +10,4 @@ Feature: Verify Belatrix INternal Login Works Correctly
     @DEV
     Examples:
       | user   | pass                     |
-      | Jneira | 26LMoucqQFjcWlmduLFy4w== |
+      | Jneira | bXQcwbNyu0poPbPQSZh80w== |
