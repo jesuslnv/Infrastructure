@@ -1,5 +1,7 @@
 package steps;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 import io.cucumber.core.api.Scenario;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
@@ -24,9 +26,7 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import services.PenetrationTestingService;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -125,12 +125,26 @@ class WebDriverManager {
     public static void runPenetrationTesting(Scenario scenario) {
         //Only runs the scan if the "owasp" variable is TRUE
         if (owasp) {
-            PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
-            PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
-            PenetrationTestingService.setScannerStrength("High");
-            PenetrationTestingService.setScannerThreshold("Low");
-            PenetrationTestingService.setRiskLevel("MEDIUM");
-            PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
+            //Validates if the Current URL is not the same than the previous URL
+            if (!PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
+                PenetrationTestingService.setEnablePassiveScan(true);
+                PenetrationTestingService.setEnableActiveScan(false);
+                PenetrationTestingService.setEnableSpiderScan(false);
+                PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
+                PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
+                PenetrationTestingService.setScannerStrength("High");
+                PenetrationTestingService.setScannerThreshold("Low");
+                PenetrationTestingService.setReportFileLocation("target/zapReport/");
+                PenetrationTestingService.setReportFileName("report.html");
+                PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
+                File tmpFile = new File("target/zapReport/report.html");
+                try {
+                    String htmlReport = Files.asCharSource(tmpFile, Charsets.UTF_8).read();
+                    scenario.write("<details style=\"margin: -1em 0em;\"><summary><span class=\"keyword\" itemprop=\"keyword\">Security Scan Report For URL: \"" + webDriver.getCurrentUrl() + "\"</span></summary>" + htmlReport + "</details>");
+                } catch (IOException e) {
+                    LOGGER.error("Error during the Owasp Zap report attach event: {}", e.getMessage());
+                }
+            }
         }
     }
 
