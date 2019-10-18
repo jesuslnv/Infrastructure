@@ -128,8 +128,8 @@ class WebDriverManager {
             //Validates if the Current URL is not the same than the previous URL
             if (!PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
                 PenetrationTestingService.setEnablePassiveScan(true);
-                PenetrationTestingService.setEnableActiveScan(false);
-                PenetrationTestingService.setEnableSpiderScan(false);
+                PenetrationTestingService.setEnableActiveScan(true);
+                PenetrationTestingService.setEnableSpiderScan(true);
                 PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
                 PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
                 PenetrationTestingService.setScannerStrength("High");
