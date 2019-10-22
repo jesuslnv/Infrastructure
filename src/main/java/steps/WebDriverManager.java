@@ -135,12 +135,13 @@ class WebDriverManager {
                 PenetrationTestingService.setScannerStrength("High");
                 PenetrationTestingService.setScannerThreshold("Low");
                 PenetrationTestingService.setReportFileLocation("target/zapReport/");
-                PenetrationTestingService.setReportFileName("report.html");
+                PenetrationTestingService.setReportFileName("report");
                 PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
                 File tmpFile = new File("target/zapReport/report.html");
                 try {
-                    String htmlReport = Files.asCharSource(tmpFile, Charsets.UTF_8).read();
-                    scenario.write("<details style=\"margin: -1em 0em;\"><summary><span class=\"keyword\" itemprop=\"keyword\">Security Scan Report For URL: \"" + webDriver.getCurrentUrl() + "\"</span></summary>" + htmlReport + "</details>");
+                    //String htmlReport = Files.asCharSource(tmpFile, Charsets.UTF_8).read();
+                    scenario.embed(Files.asByteSource(tmpFile).read(), "text/html");
+                    //scenario.write("<details style=\"margin: -1em 0em;\"><summary><span class=\"keyword\" itemprop=\"keyword\">Security Scan Report For URL: \"" + webDriver.getCurrentUrl() + "\"</span></summary>" + htmlReport + "</details>");
                 } catch (IOException e) {
                     LOGGER.error("Error during the Owasp Zap report attach event: {}", e.getMessage());
                 }

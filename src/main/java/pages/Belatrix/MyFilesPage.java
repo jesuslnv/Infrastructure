@@ -1,11 +1,7 @@
 package pages.Belatrix;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import components.control.ButtonControl;
 import components.control.SelectControl;
-import components.control.TextControl;
+import org.openqa.selenium.WebDriver;
 import pages.BelatrixPage;
 
 public class MyFilesPage extends BelatrixPage {

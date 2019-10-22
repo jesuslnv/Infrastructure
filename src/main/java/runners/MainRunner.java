@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import java.io.Serializable;
 
 public class MainRunner implements Serializable {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
         if (args.length == 0) {
@@ -34,8 +34,9 @@ public class MainRunner implements Serializable {
                 plugin = tmpData;
             }
         }
-        logger.info("TAGS: " + tags);
-        logger.info("PLUGIN: " + plugin);
+        LOGGER.info("-------------------------------------------------------------------------");
+        LOGGER.info("TAGS: " + tags);
+        LOGGER.info("PLUGIN: " + plugin);
         // --------------------------------------------------------------------------
         // Set corresponding properties AND Set all features in project by default
         // --------------------------------------------------------------------------
@@ -49,5 +50,5 @@ public class MainRunner implements Serializable {
     @CucumberOptions(glue = "steps", tags = {"@DEV"})
     public static class CucumberBase {
     }
-    //</editor-fold>
+    //</editor-fold>cd
 }
