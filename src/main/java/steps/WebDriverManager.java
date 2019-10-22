@@ -1,6 +1,5 @@
 package steps;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import io.cucumber.core.api.Scenario;
 import org.apache.commons.io.IOUtils;
@@ -26,11 +25,16 @@ import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import services.PenetrationTestingService;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -41,6 +45,7 @@ class WebDriverManager {
     private static FirefoxOptions firefoxOptions;
     private static int numberOfScenarios = 0;
     private static boolean owasp = false, seleniumGrid = false, chrome = false;
+    private static List<File> lstFileOWASPZapReport = new ArrayList<>();
 
     static WebDriver getWebDriver(Scenario scenario) {
         //If the current WebDriver is NULL it will be settled
@@ -68,10 +73,22 @@ class WebDriverManager {
 
     static void closeDriver(Scenario scenario) {
         if (webDriver != null) {
+            //--------------------------------------------------------------------------------------
+            //If there are OWASP Zap HTML Reports inside, it adds each one to the final part
+            if (owasp) {
+                for (File tmpFile : lstFileOWASPZapReport) {
+                    try {
+                        scenario.embed(Files.asByteSource(tmpFile).read(), "text/html");
+                    } catch (IOException e) {
+                        LOGGER.error("Error during the Owasp Zap report attach event: {}", e.getMessage());
+                    }
+                }
+            }
+            //--------------------------------------------------------------------------------------
             //Takes an ScreenShot
             byte[] screenShot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
             scenario.embed(screenShot, "image/png");
-            //-------------------------------------------------------
+            //--------------------------------------------------------------------------------------
             //Quit the Driver
             LOGGER.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
             LOGGER.info("Trying to quit the Scenario");
@@ -127,6 +144,7 @@ class WebDriverManager {
         if (owasp) {
             //Validates if the Current URL is not the same than the previous URL
             if (!PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
+                PenetrationTestingService.setEnableJSONReport(false);
                 PenetrationTestingService.setEnablePassiveScan(true);
                 PenetrationTestingService.setEnableActiveScan(true);
                 PenetrationTestingService.setEnableSpiderScan(true);
@@ -135,14 +153,10 @@ class WebDriverManager {
                 PenetrationTestingService.setScannerStrength("High");
                 PenetrationTestingService.setScannerThreshold("Low");
                 PenetrationTestingService.setReportFileLocation("target/zapReport/");
-                PenetrationTestingService.setReportFileName("report");
+                PenetrationTestingService.setReportFileName("report" + lstFileOWASPZapReport.size());
                 PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
-                File tmpFile = new File("target/zapReport/report.html");
-                try {
-                    scenario.embed(Files.asByteSource(tmpFile).read(), "text/html");
-                } catch (IOException e) {
-                    LOGGER.error("Error during the Owasp Zap report attach event: {}", e.getMessage());
-                }
+                File tmpFile = new File("target/zapReport/report" + lstFileOWASPZapReport.size() + ".html");
+                lstFileOWASPZapReport.add(tmpFile);
             }
         }
     }
