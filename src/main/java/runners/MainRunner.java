@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
+
 import java.io.Serializable;
 
 public class MainRunner implements Serializable {
