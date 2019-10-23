@@ -116,6 +116,8 @@
             <groupId>SeleniumControl</groupId>
             <artifactId>SeleniumControl</artifactId>
             <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/SeleniumControl-1.0.0.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
