@@ -11,6 +11,7 @@ addons:
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - git fetch --unshallow
+  - mvn install:install-file -Dfile=${project.basedir}/src/main/resources/SeleniumControl-1.0.0.jar -DgroupId=SeleniumControl -DartifactId=SeleniumControl -Dversion=1.0.0 -Dpackaging=jar
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=InfrastructureSC
 cache:
   directories:
