@@ -12,7 +12,7 @@ public class MyFilesPage extends BelatrixPage {
         webDriver.switchTo().defaultContent();
     }
 
-    public boolean MyFilesPage_CorrectlyDisplayed() {
+    public boolean myFilesPage_CorrectlyDisplayed() {
         selectControl = new SelectControl(webDriver, "//script[contains(.,'PAGEID = \"myfiles\"')]");
         return selectControl.isControlExist();
     }

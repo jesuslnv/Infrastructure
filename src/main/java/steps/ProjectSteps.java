@@ -55,7 +55,7 @@ public class ProjectSteps {
     @Then("^My Files Page is Correctly Displayed; in Belatrix Page$")
     public void MyFilesPage_CorrectlyDisplayed_in_BelatrixPage() {
         MyFilesPage myFilesPage = new MyFilesPage(webDriver);
-        boolean response = myFilesPage.MyFilesPage_CorrectlyDisplayed();
+        boolean response = myFilesPage.myFilesPage_CorrectlyDisplayed();
         Assert.assertTrue("My Files Page isn't Correctly Displayed", response);
     }
 }

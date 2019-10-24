@@ -267,7 +267,7 @@ class WebDriverManager {
                 hostFound = myURL.getHost();
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.error("Error getting Node IP: {}", ex.getMessage());
         }
         return hostFound;
     }
