@@ -9,8 +9,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
-import pages.Belatrix.MyFilesPage;
-import pages.BelatrixPage;
+import pages.Google.Images.ImagePreviewPage;
+import pages.Google.ImagesPage;
+import pages.GooglePage;
 
 public class ProjectSteps {
     private WebDriver webDriver;
@@ -33,29 +34,61 @@ public class ProjectSteps {
         WebDriverManager.closeDriver(scenario);
     }
 
-    @Given("^I Login To Belatrix Page with (.*) as User and (.*) as Password$")
-    public void LoginTo_BelatrixPage(String user, String pass) {
-        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
-        belatrixPage.LoginTo_BelatrixPage(user, pass);
+    @Given("^I Login To Google Page with (.*) as User and (.*) as Password$")
+    public void loginTo_GooglePage(String user, String pass) {
+        GooglePage googlePage = new GooglePage(webDriver);
+        googlePage.loginTo_GooglePage(user, pass);
     }
 
-    @Then("^Belatrix Page is Correctly Displayed$")
-    public void BelatrixPage_CorrectlyDisplayed() {
-        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
-        boolean response = belatrixPage.BelatrixPage_CorrectlyDisplayed();
-        Assert.assertTrue("Belatrix Page isn't Correctly Displayed", response);
+    @Then("^Google Page is Correctly Displayed$")
+    public void googlePage_CorrectlyDisplayed() {
+        GooglePage googlePage = new GooglePage(webDriver);
+        boolean response = googlePage.googlePage_CorrectlyDisplayed();
+        Assert.assertTrue("Google Page isn't Correctly Displayed", response);
     }
 
-    @When("^I Click on My Files Button; in Belatrix Main Page$")
-    public void ClickOn_MyFilesButton_in_BelatrixMainPage() {
-        BelatrixPage belatrixPage = new BelatrixPage(webDriver);
-        belatrixPage.ClickOn_MyFilesButton();
+    @When("^I Set (.*) as search value; in Google Page$")
+    public void set_SearchValue_in_GooglePage(String value) {
+        GooglePage googlePage = new GooglePage(webDriver);
+        googlePage.set_SearchValue_GooglePage(value);
     }
 
-    @Then("^My Files Page is Correctly Displayed; in Belatrix Page$")
-    public void MyFilesPage_CorrectlyDisplayed_in_BelatrixPage() {
-        MyFilesPage myFilesPage = new MyFilesPage(webDriver);
-        boolean response = myFilesPage.myFilesPage_CorrectlyDisplayed();
-        Assert.assertTrue("My Files Page isn't Correctly Displayed", response);
+    @When("^I Press Enter Key; in Google Page$")
+    public void pressEnter_in_GooglePage() {
+        GooglePage googlePage = new GooglePage(webDriver);
+        googlePage.press_EnterKey();
+    }
+
+    @Then("^Search Result Correctly Displayed; in Google Page$")
+    public void searchResult_CorrectlyDisplayed_in_GooglePage() {
+        GooglePage googlePage = new GooglePage(webDriver);
+        boolean response = googlePage.searchResult_CorrectlyDisplayed();
+        Assert.assertTrue("Search result isn't Correctly Displayed", response);
+    }
+
+    @When("^I Click on Images Button; in Google Page$")
+    public void clickOn_ImagesButton_in_GooglePage() {
+        GooglePage googlePage = new GooglePage(webDriver);
+        googlePage.clickOn_ImagesButton();
+    }
+
+    @Then("^Images Page is Correctly Displayed; in Google Page$")
+    public void imagesPage_CorrectlyDisplayed_in_GooglePage() {
+        ImagesPage imagesPage = new ImagesPage(webDriver);
+        boolean response = imagesPage.imagesPage_CorrectlyDisplayed();
+        Assert.assertTrue("Images Page isn't Correctly Displayed", response);
+    }
+
+    @When("^I Click on First Image Found; in Images Page; in Google Page$")
+    public void clickOn_FirstImageFound_in_ImagesPage_in_GooglePage() {
+        ImagesPage imagesPage = new ImagesPage(webDriver);
+        imagesPage.clickOn_FirstImageFound();
+    }
+
+    @Then("^Image Preview Page is Correctly Displayed; in Google Page$")
+    public void imagePreviewPage_CorrectlyDisplayed_in_ImagesPage_in_GooglePage() {
+        ImagePreviewPage imagePreviewPage = new ImagePreviewPage(webDriver);
+        boolean response = imagePreviewPage.imagesPreviewPage_CorrectlyDisplayed();
+        Assert.assertTrue("Image preview Page isn't Correctly Displayed", response);
     }
 }
