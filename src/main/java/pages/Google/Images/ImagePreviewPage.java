@@ -13,7 +13,7 @@ public class ImagePreviewPage extends ImagesPage {
     }
 
     public boolean imagesPreviewPage_CorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//div[@data-hp='imgrc']");
+        selectControl = new SelectControl(webDriver, "//div[2]/div[contains(@jsaction,'contextmenu')]");
         return selectControl.isControlExist();
     }
 }

@@ -20,7 +20,7 @@ public class ImagesPage extends GooglePage {
     }
 
     public void clickOn_FirstImageFound() {
-        buttonControl = new ButtonControl(webDriver, "(//a[1]/div[1]/img)[1]");
+        buttonControl = new ButtonControl(webDriver, "(//div[2]/div/div/a/img[@jsaction='load:str.tbn'])[1]");
         buttonControl.click();
     }
 }

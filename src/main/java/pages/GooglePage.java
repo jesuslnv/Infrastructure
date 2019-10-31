@@ -9,6 +9,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import components.Page;
 import components.control.SelectControl;
+import org.openqa.selenium.interactions.Actions;
 
 public class GooglePage extends Page {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,7 +30,7 @@ public class GooglePage extends Page {
     }
 
     public boolean googlePage_CorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//img[@id='hplogo']");
+        selectControl = new SelectControl(webDriver, "//form[@action='/search']");
         return selectControl.isControlExist();
     }
 
@@ -39,7 +40,8 @@ public class GooglePage extends Page {
     }
 
     public void press_EnterKey() {
-        webDriver.findElement(By.xpath("//form[@action='/search']/div[2]/div[1]/div[1]/div/div[2]/input")).sendKeys(Keys.ENTER);
+        selectControl = new SelectControl(webDriver, "//form[@action='/search']/div[2]/div[1]/div[1]/div/div[2]/input");
+        selectControl.sendkeyToElement(Keys.ENTER);
     }
 
     public boolean searchResult_CorrectlyDisplayed() {
