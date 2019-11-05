@@ -146,8 +146,8 @@ class WebDriverManager {
             if (!PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
                 PenetrationTestingService.setEnableJSONReport(false);
                 PenetrationTestingService.setEnablePassiveScan(true);
-                PenetrationTestingService.setEnableActiveScan(true);
-                PenetrationTestingService.setEnableSpiderScan(true);
+                PenetrationTestingService.setEnableActiveScan(false);
+                PenetrationTestingService.setEnableSpiderScan(false);
                 PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
                 PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
                 PenetrationTestingService.setScannerStrength("High");
