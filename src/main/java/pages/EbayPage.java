@@ -11,46 +11,46 @@ import components.Page;
 import components.control.SelectControl;
 import org.openqa.selenium.interactions.Actions;
 
-public class GooglePage extends Page {
+public class EbayPage extends Page {
     private static final Logger LOGGER = LogManager.getLogger();
     private TextControl textControl;
     private ButtonControl buttonControl;
     private SelectControl selectControl;
 
-    public GooglePage(WebDriver webDriver) {
+    public EbayPage(WebDriver webDriver) {
         super(webDriver);
         webDriver.switchTo().defaultContent();
     }
 
-    public void loginTo_GooglePage(String user, String pass) {
-        webDriver.navigate().to("https://www.google.com/");
+    public void loginTo_EbayPage(String user, String pass) {
+        webDriver.navigate().to("https://www.ebay.com/");
         LOGGER.info("Here can be used the User '{}' and Password '{}' to set in a specific field to Login", user, pass);
         // Wait for page Load
         waitForPageLoad(60);
     }
 
-    public boolean googlePage_CorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//form[@action='/search']");
+    public boolean ebayPage_CorrectlyDisplayed() {
+        selectControl = new SelectControl(webDriver, "//a/img[@role='presentation']");
         return selectControl.isControlExist();
     }
 
-    public void set_SearchValue_GooglePage(String value) {
-        textControl = new TextControl(webDriver, "//form[@action='/search']/div[2]/div[1]/div[1]/div/div[2]/input");
+    public void set_SearchValue_EbayPage(String value) {
+        textControl = new TextControl(webDriver, "//table[@role='presentation']//div/div/input");
         textControl.setText(value);
     }
 
     public void press_EnterKey() {
-        selectControl = new SelectControl(webDriver, "//form[@action='/search']/div[2]/div[1]/div[1]/div/div[2]/input");
+        selectControl = new SelectControl(webDriver, "//table[@role='presentation']//div/div/input");
         selectControl.sendkeyToElement(Keys.ENTER);
     }
 
     public boolean searchResult_CorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//div[@id='resultStats']");
+        selectControl = new SelectControl(webDriver, "(//span/a[contains(text(),'shoes')])[1]");
         return selectControl.isControlExist();
     }
 
-    public void clickOn_ImagesButton() {
-        buttonControl = new ButtonControl(webDriver, "//div[@role='tab'][2]/a");
+    public void clickOn_FirstProductInList() {
+        buttonControl = new ButtonControl(webDriver, "(//div/div[1]/div/a[1]/div/img)[1]");
         buttonControl.click();
     }
 }

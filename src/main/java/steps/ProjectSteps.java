@@ -9,9 +9,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
-import pages.Google.Images.ImagePreviewPage;
-import pages.Google.ImagesPage;
-import pages.GooglePage;
+import pages.Ebay.ProductInformation.DescriptionTabView;
+import pages.Ebay.ProductInformationPage;
+import pages.EbayPage;
 
 public class ProjectSteps {
     private WebDriver webDriver;
@@ -34,61 +34,61 @@ public class ProjectSteps {
         WebDriverManager.closeDriver(scenario);
     }
 
-    @Given("^I Login To Google Page with (.*) as User and (.*) as Password$")
-    public void loginTo_GooglePage(String user, String pass) {
-        GooglePage googlePage = new GooglePage(webDriver);
-        googlePage.loginTo_GooglePage(user, pass);
+    @Given("^I Login To Ebay Page with (.*) as User and (.*) as Password$")
+    public void loginTo_EbayPage(String user, String pass) {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        ebayPage.loginTo_EbayPage(user, pass);
     }
 
-    @Then("^Google Page is Correctly Displayed$")
-    public void googlePage_CorrectlyDisplayed() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        boolean response = googlePage.googlePage_CorrectlyDisplayed();
-        Assert.assertTrue("Google Page isn't Correctly Displayed", response);
+    @Then("^Ebay Page is Correctly Displayed$")
+    public void ebayPage_CorrectlyDisplayed() {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        boolean response = ebayPage.ebayPage_CorrectlyDisplayed();
+        Assert.assertTrue("Ebay Page isn't Correctly Displayed", response);
     }
 
-    @When("^I Set (.*) as search value; in Google Page$")
-    public void set_SearchValue_in_GooglePage(String value) {
-        GooglePage googlePage = new GooglePage(webDriver);
-        googlePage.set_SearchValue_GooglePage(value);
+    @When("^I Set (.*) as search value; in Ebay Page$")
+    public void set_SearchValue_in_EbayPage(String value) {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        ebayPage.set_SearchValue_EbayPage(value);
     }
 
-    @When("^I Press Enter Key; in Google Page$")
-    public void pressEnter_in_GooglePage() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        googlePage.press_EnterKey();
+    @When("^I Press Enter Key; in Ebay Page$")
+    public void pressEnter_in_EbayPage() {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        ebayPage.press_EnterKey();
     }
 
-    @Then("^Search Result Correctly Displayed; in Google Page$")
-    public void searchResult_CorrectlyDisplayed_in_GooglePage() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        boolean response = googlePage.searchResult_CorrectlyDisplayed();
+    @Then("^Search Result Correctly Displayed; in Ebay Page$")
+    public void searchResult_CorrectlyDisplayed_in_EbayPage() {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        boolean response = ebayPage.searchResult_CorrectlyDisplayed();
         Assert.assertTrue("Search result isn't Correctly Displayed", response);
     }
 
-    @When("^I Click on Images Button; in Google Page$")
-    public void clickOn_ImagesButton_in_GooglePage() {
-        GooglePage googlePage = new GooglePage(webDriver);
-        googlePage.clickOn_ImagesButton();
+    @When("^I Click on First Product in List; in Ebay Page$")
+    public void clickOn_FirstProductInList_in_EbayPage() {
+        EbayPage ebayPage = new EbayPage(webDriver);
+        ebayPage.clickOn_FirstProductInList();
     }
 
-    @Then("^Images Page is Correctly Displayed; in Google Page$")
-    public void imagesPage_CorrectlyDisplayed_in_GooglePage() {
-        ImagesPage imagesPage = new ImagesPage(webDriver);
-        boolean response = imagesPage.imagesPage_CorrectlyDisplayed();
-        Assert.assertTrue("Images Page isn't Correctly Displayed", response);
-    }
-
-    @When("^I Click on First Image Found; in Images Page; in Google Page$")
-    public void clickOn_FirstImageFound_in_ImagesPage_in_GooglePage() {
-        ImagesPage imagesPage = new ImagesPage(webDriver);
-        imagesPage.clickOn_FirstImageFound();
-    }
-
-    @Then("^Image Preview Page is Correctly Displayed; in Google Page$")
+    @Then("^Product Information Page is Correctly Displayed; in Ebay Page$")
     public void imagePreviewPage_CorrectlyDisplayed_in_ImagesPage_in_GooglePage() {
-        ImagePreviewPage imagePreviewPage = new ImagePreviewPage(webDriver);
-        boolean response = imagePreviewPage.imagesPreviewPage_CorrectlyDisplayed();
-        Assert.assertTrue("Image preview Page isn't Correctly Displayed", response);
+        ProductInformationPage productInformationPage = new ProductInformationPage(webDriver);
+        boolean response = productInformationPage.productInformationPage_CorrectlyDisplayed();
+        Assert.assertTrue("Product Information Page isn't Correctly Displayed", response);
+    }
+
+    @When("^I Click on Description Tab; in Product Information Page; in Ebay Page$")
+    public void clickOn_DescriptionTab_in_ProductInformationPage_in_EbayPage() {
+        ProductInformationPage productInformationPage = new ProductInformationPage(webDriver);
+        productInformationPage.clickOn_DescriptionTab();
+    }
+
+    @Then("^Description Tab View is Correctly Displayed; in Product Information Page; in Ebay Page$")
+    public void descriptionTabView_CorrectlyDisplayed_in_ProductInformationPage_in_EbayPage() {
+        DescriptionTabView descriptionTabView = new DescriptionTabView(webDriver);
+        boolean response = descriptionTabView.descriptionTabView_CorrectlyDisplayed();
+        Assert.assertTrue("Description Tab View isn't Correctly Displayed", response);
     }
 }
