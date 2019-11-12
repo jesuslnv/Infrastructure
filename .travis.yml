@@ -12,7 +12,7 @@ addons:
       - master
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=jesuslnv_SeleniumControl -Dsonar.organization=seleniumcontrol -Dsonar.login=f0f8f6c4c2cd25e60ba983e7edb5ad771f6dceff
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=jesuslnv_Infrastructure -Dsonar.organization=seleniumcontrol -Dsonar.login=f0f8f6c4c2cd25e60ba983e7edb5ad771f6dceff
 cache:
   directories:
     - "$HOME/.m2/repository"
