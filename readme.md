@@ -53,9 +53,9 @@ Is important to notice that each **view** is created inside a "**package**" with
 
 ```sh
 - EbayPage (Class)
-- Ebay (Package)
+- ebay (Package)
   - ProductInformationView (Class)
-  - ProductInformation (Package)
+  - productInformation (Package)
     - DescriptionTabView (Class)
 ```
 

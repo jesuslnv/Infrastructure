@@ -1,4 +1,4 @@
-package pages.Ebay;
+package pages.ebay;
 
 import components.control.ButtonControl;
 import components.control.SelectControl;

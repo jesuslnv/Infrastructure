@@ -9,8 +9,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
-import pages.Ebay.ProductInformation.DescriptionTabView;
-import pages.Ebay.ProductInformationView;
+import pages.ebay.productInformation.DescriptionTabView;
+import pages.ebay.ProductInformationView;
 import pages.EbayPage;
 
 public class ProjectSteps {

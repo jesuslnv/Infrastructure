@@ -1,8 +1,8 @@
-package pages.Ebay.ProductInformation;
+package pages.ebay.productInformation;
 
 import components.control.SelectControl;
 import org.openqa.selenium.WebDriver;
-import pages.Ebay.ProductInformationView;
+import pages.ebay.ProductInformationView;
 
 public class DescriptionTabView extends ProductInformationView {
     private SelectControl selectControl;

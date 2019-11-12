@@ -180,6 +180,7 @@ class WebDriverManager {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     LOGGER.error(ex.getMessage());
+                    Thread.currentThread().interrupt();
                 }
                 //Verify if the elapsed time didn't exceed the limit
                 long elapsedTime = System.currentTimeMillis() - startTime;
