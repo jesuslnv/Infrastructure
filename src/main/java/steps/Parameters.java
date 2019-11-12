@@ -1,7 +1,5 @@
 package steps;
 
-import java.util.HashMap;
-
 class Parameters {
     //File MIME Types to be directly accepted and downloaded
     private final static String FILE_MIME_TYPES = "application/msword," + "text/plain," + "text/html," + "image/jpeg," + "image/png," + "application/csv," + "text/csv," + "application/octet-stream," + "application/csv," + "pdf,"

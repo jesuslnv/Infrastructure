@@ -1,15 +1,13 @@
 package pages;
 
+import components.Page;
 import components.control.ButtonControl;
+import components.control.SelectControl;
 import components.control.TextControl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import components.Page;
-import components.control.SelectControl;
-import org.openqa.selenium.interactions.Actions;
 
 public class EbayPage extends Page {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -22,34 +20,34 @@ public class EbayPage extends Page {
         webDriver.switchTo().defaultContent();
     }
 
-    public void loginTo_EbayPage(String user, String pass) {
+    public void loginToEbayPage(String user, String pass) {
         webDriver.navigate().to("https://www.ebay.com/");
         LOGGER.info("Here can be used the User '{}' and Password '{}' to set in a specific field to Login", user, pass);
         // Wait for page Load
         waitForPageLoad(60);
     }
 
-    public boolean ebayPage_CorrectlyDisplayed() {
+    public boolean ebayPageCorrectlyDisplayed() {
         selectControl = new SelectControl(webDriver, "//a/img[@role='presentation']");
         return selectControl.isControlExist();
     }
 
-    public void set_SearchValue_EbayPage(String value) {
+    public void setSearchValueEbayPage(String value) {
         textControl = new TextControl(webDriver, "//table[@role='presentation']//div/div/input");
         textControl.setText(value);
     }
 
-    public void press_EnterKey() {
+    public void pressEnterKey() {
         selectControl = new SelectControl(webDriver, "//table[@role='presentation']//div/div/input");
         selectControl.sendkeyToElement(Keys.ENTER);
     }
 
-    public boolean searchResult_CorrectlyDisplayed() {
+    public boolean searchResultCorrectlyDisplayed() {
         selectControl = new SelectControl(webDriver, "(//span/a[contains(text(),'shoes')])[1]");
         return selectControl.isControlExist();
     }
 
-    public void clickOn_FirstProductInList() {
+    public void clickOnFirstProductInList() {
         buttonControl = new ButtonControl(webDriver, "(//div/div[1]/div/a[1]/div/img)[1]");
         buttonControl.click();
     }

@@ -14,12 +14,12 @@ public class ProductInformationView extends EbayPage {
         webDriver.switchTo().defaultContent();
     }
 
-    public boolean productInformationPage_CorrectlyDisplayed() {
+    public boolean productInformationPageCorrectlyDisplayed() {
         selectControl = new SelectControl(webDriver, "//div[@id='LeftSummaryPanel']");
         return selectControl.isControlExist();
     }
 
-    public void clickOn_DescriptionTab() {
+    public void clickOnDescriptionTab() {
         buttonControl = new ButtonControl(webDriver, "//a[@aria-controls='desc_panel']");
         buttonControl.click();
     }
