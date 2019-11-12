@@ -4,10 +4,10 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-#Selenium Control
+# Selenium Control
 This is a base project that uses "SeleniumControl" as Library to run Automated Tests and Penetration Testing.
 
-#Getting Started
+# Getting Started
 This project can run using the file **MainRunner** located in the package runner, this runner receives the next **arguments**:
 
 |Function Name                                      |Action Performed|
@@ -18,16 +18,16 @@ This project can run using the file **MainRunner** located in the package runner
 |-p json:target/Infrastructure/Infrastructure.json  |Is a TAG where the **JSON** report will be written|
 |-p html:target/Infrastructure/html-report          |Is a TAG where the **HTML** report will be written|
 
-#Class/Package Distribution
+# Class/Package Distribution
 In this project exists different pre-defined distributions that you must follow to maintain the order and legibility.
 
-##Package "datafile"
+## Package "datafile"
 This folder is necessary to store all your features, also inside this folder you can create other folders with different names to order your tests.
 
-##Class "MainRunner"
+## Class "MainRunner"
 This class is in charge to run all your tests, here you can find the parameters previously defined to run your features.
 
-##Class "WebDriverManager"
+## Class "WebDriverManager"
 This class is where all the logic with the webdriver is stored. Here is a list of each function defined:
 
 |Function Name                      |Action Performed|
@@ -40,10 +40,10 @@ This class is where all the logic with the webdriver is stored. Here is a list o
 |configSeleniumGrid                 |This function configures the base **Selenium Grid** |
 |getNodeIP                          |This is a function used by the **configSeleniumGrid** to determine where is the test running in the Selenium Grid |
 
-##Class "ProjectSteps" 
+## Class "ProjectSteps" 
 In this class is located all the step definitions with its LINK to **Cucumber Features**. 
 
-##Package "Pages"
+## Package "Pages"
 Here is located the class distribution for pages and views. The order established here is to easy maintain the tests and get a basic knowledge about the location of each page.
 In this example we can check the **EbayPage** class where contains different functions using the "**SeleniumControl**" library to call a "ButtonControl" or "SelectControl".
 This elements are calling another "Page" or "View" in the **Main Page**, so here you declare a new "*CLASS*" with the name of that view, in this case **ProductInformationPage**,
