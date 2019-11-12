@@ -172,17 +172,11 @@ class WebDriverManager {
         boolean connectionSuccessful = false;
         long startTime = System.currentTimeMillis();
         while (!connectionSuccessful) {
-            //Socket socket = null;
             LOGGER.info("Attempting to connect to ZAP API on: " + Parameters.OWASP_ZAP_HTTP_IP + " port: " + Parameters.OWASP_ZAP_HTTP_PORT);
             try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(Parameters.OWASP_ZAP_HTTP_IP, Parameters.OWASP_ZAP_HTTP_PORT), connectionTimeoutInMs);
                 connectionSuccessful = true;
                 LOGGER.info("Successfully connected to ZAP");
-                try {
-                    socket.close();
-                } catch (IOException ex) {
-                    LOGGER.error(ex.getMessage());
-                }
             } catch (IOException ignore) {
                 //Wait 1 second before trying to connect again
                 try {
