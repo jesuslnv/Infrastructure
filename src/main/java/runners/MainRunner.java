@@ -23,7 +23,8 @@ public class MainRunner implements Serializable {
     }
 
     private static void mainRun(String[] args) {
-        String tags = "", plugin = "";
+        String tags = "";
+        String plugin = "";
         for (int i = 0; i < args[0].split(";").length; i++) {
             String tmpData = args[0].split(";")[i];
             // The parameter contains the TAGS
@@ -36,8 +37,8 @@ public class MainRunner implements Serializable {
             }
         }
         LOGGER.info("-------------------------------------------------------------------------");
-        LOGGER.info("TAGS: " + tags);
-        LOGGER.info("PLUGIN: " + plugin);
+        LOGGER.info("TAGS: {}", tags);
+        LOGGER.info("PLUGIN: {}", plugin);
         // --------------------------------------------------------------------------
         // Set corresponding properties AND Set all features in project by default
         // --------------------------------------------------------------------------

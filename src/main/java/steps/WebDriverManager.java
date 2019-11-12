@@ -44,8 +44,14 @@ class WebDriverManager {
     private static ChromeOptions chromeOptions;
     private static FirefoxOptions firefoxOptions;
     private static int numberOfScenarios = 0;
-    private static boolean owasp = false, seleniumGrid = false, chrome = false;
+    private static boolean owasp = false;
+    private static boolean seleniumGrid = false;
+    private static boolean chrome = false;
     private static List<File> lstFileOWASPZapReport = new ArrayList<>();
+
+    //Private constructor to hide the implicit public one
+    private WebDriverManager() {
+    }
 
     static WebDriver getWebDriver(Scenario scenario) {
         //If the current WebDriver is NULL it will be settled
@@ -65,8 +71,8 @@ class WebDriverManager {
             webDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
             webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             LOGGER.info("-------------------------------------------------------------------------");
-            LOGGER.info("Scenario Number: " + numberOfScenarios);
-            LOGGER.info("Scenario ID: " + scenario.getId());
+            LOGGER.info("Scenario Number: {}", numberOfScenarios);
+            LOGGER.info("Scenario ID: {}", scenario.getId());
         }
         return webDriver;
     }
@@ -90,7 +96,7 @@ class WebDriverManager {
             scenario.embed(screenShot, "image/png");
             //--------------------------------------------------------------------------------------
             //Quit the Driver
-            LOGGER.info("SCENARIO STATUS: " + (scenario.isFailed() ? "FAILED" : "OK"));
+            LOGGER.info("SCENARIO STATUS: {}", (scenario.isFailed() ? "FAILED" : "OK"));
             LOGGER.info("Trying to quit the Scenario");
             LOGGER.info("-------------------------------------------------------------------------");
             webDriver.quit();
@@ -139,25 +145,22 @@ class WebDriverManager {
     //</editor-fold>
 
     //<editor-fold desc="OWASP ZAP CONFIG">
-    public static void runPenetrationTesting(Scenario scenario) {
-        //Only runs the scan if the "owasp" variable is TRUE
-        if (owasp) {
-            //Validates if the Current URL is not the same than the previous URL
-            if (!PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
-                PenetrationTestingService.setEnableJSONReport(false);
-                PenetrationTestingService.setEnablePassiveScan(true);
-                PenetrationTestingService.setEnableActiveScan(false);
-                PenetrationTestingService.setEnableSpiderScan(true);
-                PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
-                PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
-                PenetrationTestingService.setScannerStrength("High");
-                PenetrationTestingService.setScannerThreshold("Low");
-                PenetrationTestingService.setReportFileLocation("target/zapReport/");
-                PenetrationTestingService.setReportFileName("report" + lstFileOWASPZapReport.size());
-                PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
-                File tmpFile = new File("target/zapReport/report" + lstFileOWASPZapReport.size() + ".html");
-                lstFileOWASPZapReport.add(tmpFile);
-            }
+    public static void runPenetrationTesting() {
+        //Only runs the scan if the "owasp" variable is TRUE, then Validates if the Current URL is not the same than the previous URL
+        if (owasp && !PenetrationTestingService.getPreviousUrlScanned().equals(webDriver.getCurrentUrl())) {
+            PenetrationTestingService.setEnableJSONReport(false);
+            PenetrationTestingService.setEnablePassiveScan(true);
+            PenetrationTestingService.setEnableActiveScan(false);
+            PenetrationTestingService.setEnableSpiderScan(true);
+            PenetrationTestingService.setHttpIp(Parameters.OWASP_ZAP_HTTP_IP);
+            PenetrationTestingService.setHttpPort(Parameters.OWASP_ZAP_HTTP_PORT);
+            PenetrationTestingService.setScannerStrength("High");
+            PenetrationTestingService.setScannerThreshold("Low");
+            PenetrationTestingService.setReportFileLocation("target/zapReport/");
+            PenetrationTestingService.setReportFileName("report" + lstFileOWASPZapReport.size());
+            PenetrationTestingService.runScanner(webDriver.getCurrentUrl());
+            File tmpFile = new File("target/zapReport/report" + lstFileOWASPZapReport.size() + ".html");
+            lstFileOWASPZapReport.add(tmpFile);
         }
     }
 
@@ -185,7 +188,7 @@ class WebDriverManager {
                 //Verify if the elapsed time didn't exceed the limit
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 if (elapsedTime >= timeoutInMs) {
-                    LOGGER.error("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
+                    LOGGER.error("Unable to connect to ZAP's proxy after {} milliseconds.", timeoutInMs);
                     throw new RuntimeException("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
                 }
                 connectionTimeoutInMs = (int) (timeoutInMs - elapsedTime);
@@ -231,20 +234,20 @@ class WebDriverManager {
             desiredCapabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, firefoxOptions);
         }
         //Server where the HUB is Running
-        String Hub = "http://MIA38747JEN001.am.tmrk.corp:4444/wd/hub";
-        LOGGER.info("HUB: " + Hub);
+        String hub = "http://MIA38747JEN001.am.tmrk.corp:4444/wd/hub";
+        LOGGER.info("HUB: {}", hub);
         try {
-            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(Hub), desiredCapabilities);
+            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL(hub), desiredCapabilities);
             remoteWebDriver.manage().window().maximize();
             remoteWebDriver.manage().deleteAllCookies();
             remoteWebDriver.manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);
             remoteWebDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             //---------- Getting Selenium Node -----------
             String nodeIP = getNodeIP(remoteWebDriver);
-            LOGGER.info("NODE: " + nodeIP);
+            LOGGER.info("NODE: {}", nodeIP);
             //--------------------------------------------
         } catch (MalformedURLException e) {
-            LOGGER.info("Error Starting Remote Driver: " + e.getMessage());
+            LOGGER.info("Error Starting Remote Driver: {}", e.getMessage());
         }
     }
 

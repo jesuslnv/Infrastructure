@@ -19,7 +19,7 @@ public class ProjectSteps {
     @AfterStep
     public void afterStep(Scenario scenario) {
         //Run the Penetration Testing to detect anomalies
-        WebDriverManager.runPenetrationTesting(scenario);
+        WebDriverManager.runPenetrationTesting();
     }
 
     @Before
