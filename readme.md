@@ -4,7 +4,7 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-# Selenium Control
+# Infrastructure
 This is a base project that uses "SeleniumControl" as Library to run Automated Tests and Penetration Testing.
 
 # Getting Started
