@@ -33,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -165,18 +166,23 @@ class WebDriverManager {
     }
 
     private static void waitForSuccessfulConnectionToZap() {
+        //Timeout in Milliseconds to try to connect to Owasp Zap
         int timeoutInMs = 15000;
         int connectionTimeoutInMs = timeoutInMs;
         boolean connectionSuccessful = false;
         long startTime = System.currentTimeMillis();
-        Socket socket = null;
         while (!connectionSuccessful) {
-            try {
-                LOGGER.info("Attempting to connect to ZAP API on: " + Parameters.OWASP_ZAP_HTTP_IP + " port: " + Parameters.OWASP_ZAP_HTTP_PORT);
-                socket = new Socket();
+            //Socket socket = null;
+            LOGGER.info("Attempting to connect to ZAP API on: " + Parameters.OWASP_ZAP_HTTP_IP + " port: " + Parameters.OWASP_ZAP_HTTP_PORT);
+            try (Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(Parameters.OWASP_ZAP_HTTP_IP, Parameters.OWASP_ZAP_HTTP_PORT), connectionTimeoutInMs);
                 connectionSuccessful = true;
                 LOGGER.info("Successfully connected to ZAP");
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    LOGGER.error(ex.getMessage());
+                }
             } catch (IOException ignore) {
                 //Wait 1 second before trying to connect again
                 try {
@@ -192,14 +198,6 @@ class WebDriverManager {
                     throw new RuntimeException("Unable to connect to ZAP's proxy after " + timeoutInMs + " milliseconds.");
                 }
                 connectionTimeoutInMs = (int) (timeoutInMs - elapsedTime);
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException ex) {
-                        LOGGER.error(ex.getMessage());
-                    }
-                }
             }
         }
     }
@@ -264,7 +262,7 @@ class WebDriverManager {
             HttpResponse response = client.execute(host, r);
             InputStream contents = response.getEntity().getContent();
             StringWriter writer = new StringWriter();
-            IOUtils.copy(contents, writer, "UTF8");
+            IOUtils.copy(contents, writer, StandardCharsets.UTF_8);
             JSONObject object = new JSONObject(writer.toString());
             URL myURL = new URL(object.getString("proxyId"));
             if ((myURL.getHost() != null) && (myURL.getPort() != -1)) {

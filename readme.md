@@ -77,8 +77,8 @@ This dependency references a previously installed library. For more information 
 [stars-url]: https://github.com/jesuslnv/Infrastructure/stargazers
 [travis-shield]: https://travis-ci.com/jesuslnv/Infrastructure.svg?branch=master
 [travis-url]: https://travis-ci.com/jesuslnv/Infrastructure
-[sonar-shield]: https://sonarcloud.io/api/project_badges/measure?project=jesuslnv_SeleniumControl&metric=alert_status
-[sonar-url]: https://sonarcloud.io/dashboard?id=jesuslnv_SeleniumControl
+[sonar-shield]: https://sonarcloud.io/api/project_badges/measure?project=jesuslnv_Infrastructure&metric=alert_status
+[sonar-url]: https://sonarcloud.io/dashboard?id=jesuslnv_Infrastructure
 [license-shield]: https://img.shields.io/badge/License-MIT-green.svg
 [license-url]: https://github.com/jesuslnv/Infrastructure/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?logo=linkedin&colorB=1E5799
