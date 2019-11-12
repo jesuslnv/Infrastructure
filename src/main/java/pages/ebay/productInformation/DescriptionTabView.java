@@ -12,7 +12,7 @@ public class DescriptionTabView extends ProductInformationView {
         webDriver.switchTo().defaultContent();
     }
 
-    public boolean descriptionTabView_CorrectlyDisplayed() {
+    public boolean descriptionTabViewCorrectlyDisplayed() {
         selectControl = new SelectControl(webDriver, "//div[@class='itemAttr']");
         return selectControl.isControlExist();
     }
