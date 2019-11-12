@@ -10,7 +10,7 @@ import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import pages.Ebay.ProductInformation.DescriptionTabView;
-import pages.Ebay.ProductInformationPage;
+import pages.Ebay.ProductInformationView;
 import pages.EbayPage;
 
 public class ProjectSteps {
@@ -74,15 +74,15 @@ public class ProjectSteps {
 
     @Then("^Product Information Page is Correctly Displayed; in Ebay Page$")
     public void imagePreviewPage_CorrectlyDisplayed_in_ImagesPage_in_GooglePage() {
-        ProductInformationPage productInformationPage = new ProductInformationPage(webDriver);
-        boolean response = productInformationPage.productInformationPage_CorrectlyDisplayed();
+        ProductInformationView productInformationView = new ProductInformationView(webDriver);
+        boolean response = productInformationView.productInformationPage_CorrectlyDisplayed();
         Assert.assertTrue("Product Information Page isn't Correctly Displayed", response);
     }
 
     @When("^I Click on Description Tab; in Product Information Page; in Ebay Page$")
     public void clickOn_DescriptionTab_in_ProductInformationPage_in_EbayPage() {
-        ProductInformationPage productInformationPage = new ProductInformationPage(webDriver);
-        productInformationPage.clickOn_DescriptionTab();
+        ProductInformationView productInformationView = new ProductInformationView(webDriver);
+        productInformationView.clickOn_DescriptionTab();
     }
 
     @Then("^Description Tab View is Correctly Displayed; in Product Information Page; in Ebay Page$")

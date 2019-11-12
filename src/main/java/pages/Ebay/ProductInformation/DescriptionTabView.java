@@ -2,9 +2,9 @@ package pages.Ebay.ProductInformation;
 
 import components.control.SelectControl;
 import org.openqa.selenium.WebDriver;
-import pages.Ebay.ProductInformationPage;
+import pages.Ebay.ProductInformationView;
 
-public class DescriptionTabView extends ProductInformationPage {
+public class DescriptionTabView extends ProductInformationView {
     private SelectControl selectControl;
 
     public DescriptionTabView(WebDriver webDriver) {

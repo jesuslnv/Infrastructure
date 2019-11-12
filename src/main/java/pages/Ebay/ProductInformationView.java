@@ -5,11 +5,11 @@ import components.control.SelectControl;
 import org.openqa.selenium.WebDriver;
 import pages.EbayPage;
 
-public class ProductInformationPage extends EbayPage {
+public class ProductInformationView extends EbayPage {
     private SelectControl selectControl;
     private ButtonControl buttonControl;
 
-    public ProductInformationPage(WebDriver webDriver) {
+    public ProductInformationView(WebDriver webDriver) {
         super(webDriver);
         webDriver.switchTo().defaultContent();
     }
