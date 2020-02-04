@@ -28,7 +28,7 @@ public class EbayPage extends Page {
     }
 
     public boolean ebayPageCorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//a/img[@role='presentation']");
+        selectControl = new SelectControl(webDriver, "//a/img[contains(@alt,'Logo')]");
         return selectControl.isControlExist();
     }
 
