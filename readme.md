@@ -72,9 +72,13 @@ This project depends on different components but the principal is the "SeleniumC
 This dependency references a previously installed library. For more information visit the [SeleniumControl](https://github.com/jesuslnv/SeleniumControl) github.
 
 ## Generate Runnable Jar
-To generate a runnable <**jar**> file, use the next command:
+Use first the next command to install required dependencies (SeleniumControl library):
 ```sh
-mvn clean -U package
+mvn validate
+```
+And finally, to generate a runnable <**jar**> file, use the next command:
+```sh
+mvn clean package
 ```
 
 <!-- LINKS -->
