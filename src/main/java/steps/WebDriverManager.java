@@ -54,7 +54,7 @@ class WebDriverManager {
     private WebDriverManager() {
     }
 
-    static WebDriver getWebDriver(Scenario scenario) {
+    static WebDriver getWebDriver() {
         //If the current WebDriver is NULL it will be settled
         if (webDriver == null) {
             String strTags = System.getProperty("cucumber.options").split(" datafile/features/")[0];
@@ -73,7 +73,6 @@ class WebDriverManager {
             webDriver.manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);
             LOGGER.info("-------------------------------------------------------------------------");
             LOGGER.info("Scenario Number: {}", numberOfScenarios);
-            LOGGER.info("Scenario ID: {}", scenario.getId());
         }
         return webDriver;
     }
@@ -108,6 +107,7 @@ class WebDriverManager {
     //<editor-fold desc="DRIVER CONFIG">
     private static void generalWebDriverConfiguration() {
         //------- Configure Webdriver Executable Location -------
+        System.getenv();
         System.setProperty("webdriver.chrome.driver", "src\\main\\resources\\chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "src\\main\\resources\\geckodriver.exe");
         //--------------- Remove Unnecessary Logs ---------------
