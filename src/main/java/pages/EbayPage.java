@@ -48,7 +48,7 @@ public class EbayPage extends Page {
     }
 
     public void clickOnFirstProductInList() {
-        buttonControl = new ButtonControl(webDriver, "(//div/div[1]/div/a[1]/div/img)[1]");
+        buttonControl = new ButtonControl(webDriver, "(//div[@id='srp-river-results']/ul/li)[1]");
         buttonControl.click();
     }
 }
