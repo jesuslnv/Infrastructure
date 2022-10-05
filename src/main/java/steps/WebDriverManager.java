@@ -1,7 +1,7 @@
 package steps;
 
 import com.google.common.io.Files;
-import io.cucumber.core.api.Scenario;
+import io.cucumber.java.Scenario;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
@@ -84,7 +84,7 @@ class WebDriverManager {
             if (owasp) {
                 for (File tmpFile : lstFileOWASPZapReport) {
                     try {
-                        scenario.embed(Files.asByteSource(tmpFile).read(), "text/html");
+                        scenario.attach(Files.asByteSource(tmpFile).read(), "text/html", tmpFile.getName());
                     } catch (IOException e) {
                         LOGGER.error("Error during the Owasp Zap report attach event: {}", e.getMessage());
                     }
@@ -93,7 +93,7 @@ class WebDriverManager {
             //--------------------------------------------------------------------------------------
             //Takes an ScreenShot
             byte[] screenShot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
-            scenario.embed(screenShot, "image/png");
+            scenario.attach(screenShot, "image/png", "Image for Scenario: " + scenario.getName());
             //--------------------------------------------------------------------------------------
             //Quit the Driver
             LOGGER.info("SCENARIO STATUS: {}", (scenario.isFailed() ? "FAILED" : "OK"));
@@ -112,7 +112,6 @@ class WebDriverManager {
         System.setProperty("webdriver.gecko.driver", "src\\main\\resources\\geckodriver.exe");
         //--------------- Remove Unnecessary Logs ---------------
         System.setProperty("webdriver.chrome.silentOutput", "true");
-        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
         java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
         //---------------- Define Driver Options ----------------
@@ -217,12 +216,10 @@ class WebDriverManager {
 
     //<editor-fold desc="SELENIUM GRID">
     private static void configSeleniumGrid() {
-        DesiredCapabilities desiredCapabilities = null;
+        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         if (chrome) {
-            desiredCapabilities = DesiredCapabilities.chrome();
             desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         } else {
-            desiredCapabilities = DesiredCapabilities.firefox();
             desiredCapabilities.setCapability(FirefoxOptions.FIREFOX_OPTIONS, firefoxOptions);
         }
         //Server where the HUB is Running

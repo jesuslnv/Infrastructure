@@ -4,8 +4,6 @@ import components.control.SelectControl;
 import org.openqa.selenium.WebDriver;
 import pages.ebay.ProductInformationView;
 
-import java.util.ArrayList;
-
 public class DescriptionTabView extends ProductInformationView {
     private SelectControl selectControl;
 

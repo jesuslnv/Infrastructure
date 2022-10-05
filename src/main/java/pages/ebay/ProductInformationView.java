@@ -2,12 +2,15 @@ package pages.ebay;
 
 import components.control.ButtonControl;
 import components.control.SelectControl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import pages.EbayPage;
 
 import java.util.ArrayList;
 
 public class ProductInformationView extends EbayPage {
+    private static final Logger LOGGER = LogManager.getLogger();
     private SelectControl selectControl;
     private ButtonControl buttonControl;
 
@@ -17,7 +20,7 @@ public class ProductInformationView extends EbayPage {
         try {
             Thread.sleep(4000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("ERROR: " + e.getMessage());
         }
         ArrayList<String> wid = new ArrayList<>(webDriver.getWindowHandles());
         webDriver.switchTo().window(wid.get(1));

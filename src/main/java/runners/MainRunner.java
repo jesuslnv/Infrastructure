@@ -49,7 +49,7 @@ public class MainRunner implements Serializable {
 
     //<editor-fold desc="BASE CLASS TO RUN CUCUMBER">
     @RunWith(Cucumber.class)
-    @CucumberOptions(glue = "steps", tags = {"@DEV"})
+    @CucumberOptions(glue = "steps", tags = "@DEV")
     public static class CucumberBase {
     }
     //</editor-fold>
