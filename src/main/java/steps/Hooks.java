@@ -1,17 +1,14 @@
 package steps;
 
 import io.cucumber.java.After;
-import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
+import io.cucumber.spring.CucumberContextConfiguration;
+import org.springframework.test.context.ContextConfiguration;
 
+@CucumberContextConfiguration
+@ContextConfiguration(classes = {WebDriverManager.class})
 public class Hooks {
-
-    @AfterStep
-    public void afterStep() {
-        //Run the Penetration Testing to detect anomalies
-        WebDriverManager.runPenetrationTesting();
-    }
 
     @Before
     public void before() {

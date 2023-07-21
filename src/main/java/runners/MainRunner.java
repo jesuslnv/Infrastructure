@@ -15,9 +15,9 @@ public class MainRunner implements Serializable {
     public static void main(String[] args) {
         if (args.length == 0) {
             args = new String[1];
-            args[0] = "-t @DEV -t @Smoke -t 'not @Chrome'";// -t 'not @OWASP'
+            args[0] = "-t @DEV and @Smoke";
             args[0] = args[0] + ";-p json:target/Infrastructure/Infrastructure.json";
-            args[0] = args[0] + " -p html:target/Infrastructure/html-report";
+            args[0] = args[0] + ", html:target/Infrastructure/html-report.html";
         }
         mainRun(args);
     }
@@ -29,11 +29,11 @@ public class MainRunner implements Serializable {
             String tmpData = args[0].split(";")[i];
             // The parameter contains the TAGS
             if (tmpData.contains("-t")) {
-                tags = tmpData;
+                tags = tmpData.replace("-t", "");
             }
             // The parameter contains the PLUGIN
             if (tmpData.contains("-p")) {
-                plugin = tmpData;
+                plugin = tmpData.replace("-p ", "");
             }
         }
         LOGGER.info("-------------------------------------------------------------------------");
@@ -42,7 +42,10 @@ public class MainRunner implements Serializable {
         // --------------------------------------------------------------------------
         // Set corresponding properties AND Set all features in project by default
         // --------------------------------------------------------------------------
-        System.setProperty("cucumber.options", tags + " datafile/features/ " + plugin);
+        System.setProperty("cucumber.glue", "steps");
+        System.setProperty("cucumber.filter.tags", tags);
+        System.setProperty("cucumber.plugin", plugin);
+        System.setProperty("cucumber.features", "datafile/features/");
         JUnitCore junit = new JUnitCore();
         junit.run(CucumberBase.class);
     }

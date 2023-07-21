@@ -22,9 +22,8 @@ public class EbayPage extends Page {
 
     public void loginToEbayPage(String user, String pass) {
         webDriver.navigate().to("https://www.ebay.com/");
-        LOGGER.info("Here can be used the User '{}' and Password '{}' to set in a specific field to Login", user, pass);
         // Wait for page Load
-        waitForPageLoad(60);
+        waitForPageLoad(30);
     }
 
     public boolean ebayPageCorrectlyDisplayed() {
@@ -48,7 +47,7 @@ public class EbayPage extends Page {
     }
 
     public void clickOnFirstProductInList() {
-        buttonControl = new ButtonControl(webDriver, "(//div[@id='srp-river-results']/ul/li)[1]");
+        buttonControl = new ButtonControl(webDriver, "(//div[@id='srp-river-results']/ul/li//div[contains(@class,'s-item__image')])[1]");
         buttonControl.click();
     }
 }

@@ -32,7 +32,7 @@ public class ProductInformationView extends EbayPage {
     }
 
     public void clickOnDescriptionTab() {
-        buttonControl = new ButtonControl(webDriver, "//a[@aria-controls='desc_panel']");
+        buttonControl = new ButtonControl(webDriver, "//div[@id='desc_panel']");
         buttonControl.click();
     }
 }
