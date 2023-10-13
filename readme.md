@@ -45,15 +45,15 @@ In this class is located all the step definitions with its LINK to **Cucumber Fe
 
 ## Package "Pages"
 Here is located the class distribution for pages and views. The order established here is to easy maintain the tests and get a basic knowledge about the location of each page.
-In this example we can check the **EbayPage** class where contains different functions using the "**SeleniumControl**" library to call a "ButtonControl" or "SelectControl".
+In this example we can check the **AmazonPage** class where contains different functions using the "**SeleniumControl**" library to call a "ButtonControl" or "SelectControl".
 This elements are calling another "Page" or "View" in the **Main Page**, so here you declare a new "*CLASS*" with the name of that view, in this case **ProductInformationPage**,
-this view **extends** from the previous page **EbayPage** to avoid "*multi-iframe*" dependencies.
+this view **extends** from the previous page **AmazonPage** to avoid "*multi-iframe*" dependencies.
 The "*multi-iframe*" is a common problem for many test developers, so with this order you can create an internal dependency between classes to fight against it.
 Is important to notice that each **view** is created inside a "**package**" with the same name of the previous corresponding Page or View. Here is the proposed example:
 
 ```sh
-- EbayPage (Class)
-- ebay (Package)
+- AmazonPage (Class)
+- amazon (Package)
   - ProductInformationView (Class)
   - productInformation (Package)
     - DescriptionTabView (Class)

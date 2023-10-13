@@ -9,45 +9,45 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
-public class EbayPage extends Page {
+public class AmazonPage extends Page {
     private static final Logger LOGGER = LogManager.getLogger();
     private TextControl textControl;
     private ButtonControl buttonControl;
     private SelectControl selectControl;
 
-    public EbayPage(WebDriver webDriver) {
+    public AmazonPage(WebDriver webDriver) {
         super(webDriver);
         webDriver.switchTo().defaultContent();
     }
 
-    public void loginToEbayPage(String user, String pass) {
-        webDriver.navigate().to("https://www.ebay.com/");
+    public void loginToAmazonPage(String user, String pass) {
+        webDriver.navigate().to("https://www.Amazon.com/");
         // Wait for page Load
         waitForPageLoad(30);
     }
 
-    public boolean ebayPageCorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//a/img[contains(@alt,'Logo')]");
+    public boolean amazonPageCorrectlyDisplayed() {
+        selectControl = new SelectControl(webDriver, "//header//a[contains(@aria-label,'Amazon')]");
         return selectControl.isControlExist();
     }
 
-    public void setSearchValueEbayPage(String value) {
-        textControl = new TextControl(webDriver, "//table[@role='presentation']//div/div/input");
+    public void setSearchValueAmazonPage(String value) {
+        textControl = new TextControl(webDriver, "//input[@id='twotabsearchtextbox']");
         textControl.setText(value);
     }
 
     public void pressEnterKey() {
-        selectControl = new SelectControl(webDriver, "//table[@role='presentation']//div/div/input");
+        selectControl = new SelectControl(webDriver, "//input[@id='twotabsearchtextbox']");
         selectControl.sendkeyToElement(Keys.ENTER);
     }
 
     public boolean searchResultCorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "(//span/a[contains(text(),'shoes')])[1]");
+        selectControl = new SelectControl(webDriver, "//span[@data-component-type='s-result-info-bar']//span[contains(text(),'Shoes')]");
         return selectControl.isControlExist();
     }
 
     public void clickOnFirstProductInList() {
-        buttonControl = new ButtonControl(webDriver, "(//div[@id='srp-river-results']/ul/li//div[contains(@class,'s-item__image')])[1]");
+        buttonControl = new ButtonControl(webDriver, "(//div[@data-component-type='s-search-result']//a)[1]");
         buttonControl.click();
     }
 }
