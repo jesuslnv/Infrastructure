@@ -7,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import pages.AmazonPage;
 
-import java.util.ArrayList;
-
 public class ProductInformationView extends AmazonPage {
     private static final Logger LOGGER = LogManager.getLogger();
     private SelectControl selectControl;
@@ -20,7 +18,7 @@ public class ProductInformationView extends AmazonPage {
     }
 
     public boolean productInformationPageCorrectlyDisplayed() {
-        selectControl = new SelectControl(webDriver, "//div[@id='detailBullets']");
+        selectControl = new SelectControl(webDriver, "//div[@data-feature-name='detailBullets']");
         return selectControl.isControlExist();
     }
 
