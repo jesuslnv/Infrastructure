@@ -13,8 +13,6 @@ This project can run using the file **MainRunner** located in the package runner
 |Function Name                                      |Action Performed|
 |---                                                |---|
 |-t                                                 |Is the TAG to be search in the datafile list|
-|-t 'not @Chrome'                                   |Command to execute all the tests using **Google Chrome**|
-|-t 'not @OWASP'                                    |Command to execute all the tests using **Owasp Zap**|
 |-p json:target/Infrastructure/Infrastructure.json  |Is a TAG where the **JSON** report will be written|
 |-p html:target/Infrastructure/html-report          |Is a TAG where the **HTML** report will be written|
 
@@ -34,9 +32,8 @@ This class is where all the logic with the webdriver is stored. Here is a list o
 |---                                |---|
 |getWebDriver                       |Configures the **webdriver** for the first time or returns the previously configured one |
 |closeDriver                        |Closes the **webdriver** and takes an screenshot to the last page viewed before it closes |
-|generalWebDriverConfiguration      |Here is configured all the parameters and properties for the **webdriver**, also here is configured the "Owasp Zap" and the Browser Type (Chrome or Firefox) |
+|generalWebDriverConfiguration      |Here is configured all the parameters and properties for the **webdriver**, also here is configured the Browser Type (Chrome or Firefox) |
 |runPenetrationTesting              |Here is configured the base parameters to run the **Penetration Testing** using the **SeleniumControl** library |
-|waitForSuccessfulConnectionToZap   |This function detects the successful connection to the previously configured **Owasp Zap** and returns "*true*" or "*false*" |
 |configSeleniumGrid                 |This function configures the base **Selenium Grid** |
 |getNodeIP                          |This is a function used by the **configSeleniumGrid** to determine where is the test running in the Selenium Grid |
 
